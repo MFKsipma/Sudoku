@@ -59,12 +59,20 @@ def block(sudokuMap):
 
 def numberLogic(solveMap):
     newSolveMap = clone(solveMap)
+    print(sudokuMap[5][7])
+    print(sudokuMap[5])
     for Y in range(9):
         for X in range(9):
+            if sudokuMap[Y][X] in "123456789":
+                continue
             for numbers in solveMap[Y][X]:
                 # test if the number is in horizontal rows
-                if numbers in testPuzzle[Y]:
+                if numbers in sudokuMap[Y]:
+                    if Y == 5 and X == 0:
+                        print(numbers)
                     newSolveMap[Y][X].remove(numbers)
+                    if Y == 5 and X == 0:
+                        print(newSolveMap[Y][X])
                 # test if the number is in vertical rows
                 elif numbers in verticalMap[X]:
                     newSolveMap[Y][X].remove(numbers)
@@ -73,34 +81,89 @@ def numberLogic(solveMap):
                     newSolveMap[Y][X].remove(numbers)
     return newSolveMap
 
+def numberLogic2(solveMap):
+    newSolveMap = clone(solveMap)
+    for Y in range(9):
+        for X in range(9):
+            if sudokuMap[Y][X] in "123456789":
+                continue
+            for numbers in solveMap[Y][X]:
+                # test if the number is unique horizontal rows
+                numberInRow = 0
+                for X2 in solveMap[Y]:
+                    if numbers == X2:
+                        numberInRow += 1
+                if numberInRow == 1:
+                    print("kaas")
+                    newSolveMap[Y][X] = [numbers]
+    return newSolveMap
+
 def mapFiller(sudokuMap, solveMap):
-    for horizontalRow in range(9):
-        for verticalRow in range(9):
-            if len(solveMap[horizontalRow][verticalRow]) == 1:
-                print(solveMap[horizontalRow][verticalRow])
-                sudokuMap[horizontalRow][verticalRow] = solveMap[horizontalRow][verticalRow][0]
-    return sudokuMap
+    for Y in range(9):
+        for X in range(9):
+            if len(solveMap[Y][X]) == 1:
+                #print(solveMap[Y][X])
+
+                #print(Y)
+                #print(X)
+                sudokuMap[Y][X] = solveMap[Y][X][0]
+                #print(sudokuMap[Y][X])
+
 
 
 verticalMap = vertical(sudokuMap)
 blockMap = block(sudokuMap)
 solveMap = [[["1", "2", "3", "4", "5", "6", "7", "8", "9"] for i in range(9)] for j in range(9)]
 
-newSolveMap = numberLogic(solveMap)
+#for i in range(9):
+#    for j in range(9):
+#        print(solveMap[i][j])
+#print("----")
+
+sudokuPrint(sudokuMap)
+
+solveMap = numberLogic(solveMap)
 
 #for i in range(9):
 #    for j in range(9):
-#        print(newSolveMap[i][j])
+#        print(solveMap[i][j])
+#print("----")
 
 
+
+
+mapFiller(sudokuMap, solveMap)
 sudokuPrint(sudokuMap)
+#print(sudokuMap[5][7])
+
+#test
+"""
+solveMap = numberLogic2(solveMap)
+
+for i in range(9):
+    for j in range(9):
+        print(solveMap[i][j])
+print("----")
 
 
-mapFiller(sudokuMap, newSolveMap)
+
+
+mapFiller(sudokuMap, solveMap)
 sudokuPrint(sudokuMap)
+"""
+#/test
 
-# test
+for i in range(9):
+    for j in range(9):
+        print(solveMap[i][j])
+print("-----")
 
 
 
+for i in range(1):
+    #verticalMap = vertical(sudokuMap)
+    #blockMap = block(sudokuMap)
+    solveMap = numberLogic(solveMap)
+    mapFiller(sudokuMap, solveMap)
+    sudokuPrint(sudokuMap)
 
