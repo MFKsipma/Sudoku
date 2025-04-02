@@ -1,5 +1,7 @@
 #sudokuMap = [[["."] for i in range(9)] for j in range(9)]
 
+#https://news.nd.edu/news/notre-dame-researcher-helps-make-sudoku-puzzles-less-puzzling/
+
 testPuzzle = [['8', '.', '.', '4', '.', '6', '.', '.', '7'],
               ['.', '.', '.', '.', '.', '.', '4', '.', '.'],
               ['.', '1', '.', '.', '.', '.', '6', '5', '.'],
