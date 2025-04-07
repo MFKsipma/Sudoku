@@ -34,6 +34,7 @@ testPuzzle3 = [['.', '8', '7', '5', '6', '4', '3', '2', '.'],
 
 sudokuMap = testPuzzle
 
+
 def clone(inputList):
     newlist = []
     for i in inputList:
@@ -42,6 +43,7 @@ def clone(inputList):
         else:
             newlist.append(i)
     return newlist
+
 
 def sudokuPrint(sudokuMap):
     print("_ _ _ _ _ _ _ _ _ _ _ _ _")
@@ -57,6 +59,7 @@ def sudokuPrint(sudokuMap):
         print(line)
     print("‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾")
 
+
 def vertical(sudokuMap):
     verticalMap = []
     for i in range(9):
@@ -65,6 +68,7 @@ def vertical(sudokuMap):
         for j in range(9):
             verticalMap[i].append(sudokuMap[j][i])
     return verticalMap
+
 
 def block(sudokuMap):
     blockMap = []
@@ -79,10 +83,9 @@ def block(sudokuMap):
             mapCounter += 1
     return blockMap
 
-def numberLogic(solveMap):
+
+def numberLogic(solveMap, verticalMap, blockMap):
     newSolveMap = clone(solveMap)
-    print(sudokuMap[5][7])
-    print(sudokuMap[5])
     for Y in range(9):
         for X in range(9):
             if sudokuMap[Y][X] in "123456789":
@@ -93,11 +96,7 @@ def numberLogic(solveMap):
             for numbers in solveMap[Y][X]:
                 # test if the number is in horizontal rows
                 if numbers in sudokuMap[Y]:
-                    if Y == 5 and X == 0:
-                        print(numbers)
                     newSolveMap[Y][X].remove(numbers)
-                    if Y == 5 and X == 0:
-                        print(newSolveMap[Y][X])
                 # test if the number is in vertical rows
                 elif numbers in verticalMap[X]:
                     newSolveMap[Y][X].remove(numbers)
@@ -105,6 +104,7 @@ def numberLogic(solveMap):
                 elif numbers in blockMap[(X // 3) + ((Y // 3) * 3)]:
                     newSolveMap[Y][X].remove(numbers)
     return newSolveMap
+
 
 def numberLogic2(solveMap):
     newSolveMap = clone(solveMap)
@@ -152,77 +152,63 @@ def numberLogic2(solveMap):
                 """
     return newSolveMap
 
+
 def mapFiller(sudokuMap, solveMap):
     for Y in range(9):
         for X in range(9):
             if len(solveMap[Y][X]) == 1:
-                #print(solveMap[Y][X])
-
-                #print(Y)
-                #print(X)
                 sudokuMap[Y][X] = solveMap[Y][X][0]
-                #print(sudokuMap[Y][X])
+    return sudokuMap
 
 
-
-verticalMap = vertical(sudokuMap)
-blockMap = block(sudokuMap)
-solveMap = [[["1", "2", "3", "4", "5", "6", "7", "8", "9"] for i in range(9)] for j in range(9)]
-
-#for i in range(9):
-#    for j in range(9):
-#        print(solveMap[i][j])
-#print("----")
-
-sudokuPrint(sudokuMap)
-
-solveMap = numberLogic(solveMap)
-
-#for i in range(9):
-#    for j in range(9):
-#        print(solveMap[i][j])
-#print("----")
-
-
-
-
-mapFiller(sudokuMap, solveMap)
-sudokuPrint(sudokuMap)
-#print(sudokuMap[5][7])
-
-#test
-"""
-solveMap = numberLogic2(solveMap)
-
-for i in range(9):
-    for j in range(9):
-        print(solveMap[i][j])
-print("----")
-
-
-
-
-mapFiller(sudokuMap, solveMap)
-sudokuPrint(sudokuMap)
-"""
-#/test
-
-for i in range(9):
-    for j in range(9):
-        print(solveMap[i][j])
-print("-----")
-
-
-
-for i in range(25):
+def recursionTest(sudokuMap, testDepth):
+    testDepth += -1
+    if testDepth == 0:
+        return True
     verticalMap = vertical(sudokuMap)
     blockMap = block(sudokuMap)
-    solveMap = numberLogic(solveMap)
-    # test
-    #verticalMap = vertical(sudokuMap)
-    #blockMap = block(sudokuMap)
-    solveMap = numberLogic2(solveMap)
-    # /test
-    mapFiller(sudokuMap, solveMap)
-    sudokuPrint(sudokuMap)
+    solveMap = [[["1", "2", "3", "4", "5", "6", "7", "8", "9"] for i in range(9)] for j in range(9)]
+    running = True
+    # when stuck, forkLevel guess numbers with the least possibilities first
+    forkLevel = 2
+    while running == True:
+        progressionTest = clone(sudokuMap)
+        #solveMap = numberLogic(solveMap, verticalMap, blockMap)
+        sudokuMap = mapFiller(sudokuMap, solveMap)
+        solveMap = numberLogic2(solveMap)
+        sudokuMap = mapFiller(sudokuMap, solveMap)
+        sudokuPrint(sudokuMap)
 
+        # ugly test if it is solved
+        solved = 0
+        for Y in sudokuMap:
+            if '.' in Y:
+                solved += 1
+        if solved == 0:
+            return False
+
+        if sudokuMap == progressionTest:
+            henk = True
+            while forkLevel < 10 and henk == True:
+                for Y in range(9):
+                    if henk == False:
+                        break
+                    for X in range(9):
+                        if henk == False:
+                            break
+                        if len(solveMap[Y][X]) == forkLevel:
+                            for numbers in solveMap[Y][X]:
+                                #print("hoi")
+                                forkTest = clone(sudokuMap)
+                                forkTest[Y][X] = numbers
+                                henk = recursionTest(forkTest, testDepth)
+                                if henk == False:
+                                    break
+                print("+++++++++++++++")
+                print(forkLevel)
+                print("-------------")
+                forkLevel += 1
+
+            running = False
+
+recursionTest(sudokuMap, 3)
