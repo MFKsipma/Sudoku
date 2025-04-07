@@ -12,7 +12,27 @@ testPuzzle = [['8', '.', '.', '4', '.', '6', '.', '.', '7'],
               ['.', '.', '1', '.', '.', '.', '.', '.', '.'],
               ['3', '.', '.', '9', '.', '2', '.', '.', '5']]
 
-sudokuMap = testPuzzle
+testPuzzle2 = [['8', '.', '.', '4', '.', '6', '.', '.', '7'],
+              ['.', '.', '.', '.', '1', '.', '4', '1', '.'],
+              ['.', '1', '.', '.', '.', '.', '6', '5', '.'],
+              ['5', '.', '9', '.', '3', '1', '7', '8', '.'],
+              ['.', '.', '1', '.', '7', '.', '.', '.', '.'],
+              ['.', '4', '8', '.', '2', '.', '1', '.', '3'],
+              ['.', '5', '2', '1', '.', '.', '.', '9', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '1'],
+              ['.', '.', '7', '9', '.', '2', '.', '.', '5']]
+
+testPuzzle3 = [['.', '8', '7', '5', '6', '4', '3', '2', '.'],
+              ['2', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['3', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['4', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['5', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['6', '.', '.', '.', '.', '.', '5', '.', '.'],
+              ['7', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['8', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['1', '2', '3', '.', '5', '6', '7', '8', '9']]
+
+sudokuMap = testPuzzle3
 
 def clone(inputList):
     newlist = []
@@ -66,6 +86,9 @@ def numberLogic(solveMap):
     for Y in range(9):
         for X in range(9):
             if sudokuMap[Y][X] in "123456789":
+                # test
+                newSolveMap[Y][X] = [sudokuMap[Y][X]]
+                # / test
                 continue
             for numbers in solveMap[Y][X]:
                 # test if the number is in horizontal rows
@@ -88,16 +111,45 @@ def numberLogic2(solveMap):
     for Y in range(9):
         for X in range(9):
             if sudokuMap[Y][X] in "123456789":
+                # test
+                newSolveMap[Y][X] = [sudokuMap[Y][X]]
+                # / test
                 continue
             for numbers in solveMap[Y][X]:
-                # test if the number is unique horizontal rows
+                # test if the number is unique in horizontal rows
                 numberInRow = 0
                 for X2 in solveMap[Y]:
-                    if numbers == X2:
+                    if numbers in X2:
                         numberInRow += 1
                 if numberInRow == 1:
-                    print("kaas")
                     newSolveMap[Y][X] = [numbers]
+                    # ff kijken of break werkt
+                    break
+                # test if the number is unique in vertical rows
+                #"""
+                vertSolveMap = vertical(solveMap)
+                numberInRow = 0
+                for Y2 in vertSolveMap[X]:
+                    if numbers in Y2:
+                        numberInRow += 1
+                if numberInRow == 1:
+                    newSolveMap[Y][X] = [numbers]
+                    # ff kijken of break werkt
+                    break
+                #"""
+                # test if the number is unique in blocks
+                #is this actually needed ?
+                """
+                blockSolveMap = block(solveMap)
+                numberInRow = 0
+                for blocks in blockSolveMap[(X // 3) + ((Y // 3) * 3)]:
+                    if numbers in blocks:
+                        numberInRow += 1
+                if numberInRow == 1:
+                    newSolveMap[Y][X] = [numbers]
+                    # ff kijken of break werkt
+                    break
+                """
     return newSolveMap
 
 def mapFiller(sudokuMap, solveMap):
@@ -162,10 +214,15 @@ print("-----")
 
 
 
-for i in range(1):
+for i in range(25):
+    verticalMap = vertical(sudokuMap)
+    blockMap = block(sudokuMap)
+    solveMap = numberLogic(solveMap)
+    # test
     #verticalMap = vertical(sudokuMap)
     #blockMap = block(sudokuMap)
-    solveMap = numberLogic(solveMap)
+    solveMap = numberLogic2(solveMap)
+    # /test
     mapFiller(sudokuMap, solveMap)
     sudokuPrint(sudokuMap)
 
