@@ -52,7 +52,7 @@ testPuzzle5 = [['7', '.', '.', '.', '3', '.', '4', '.', '.'],
               ['5', '.', '.', '.', '6', '.', '.', '.', '.'],
               ['.', '.', '6', '.', '4', '.', '.', '2', '.']]
 
-sudokuMap = testPuzzle
+#sudokuMap = testPuzzle5
 
 
 def clone(inputList):
@@ -187,22 +187,20 @@ def recursionTest(sudokuMap, testDepth):
     testDepth += -1
     if testDepth == 0:
         return True
-    print("kaas")
-    #verticalMap = vertical(sudokuMap)
-    #blockMap = block(sudokuMap)
+
     solveMap = [[["1", "2", "3", "4", "5", "6", "7", "8", "9"] for i in range(9)] for j in range(9)]
     running = True
-    # when stuck, forkLevel guess numbers with the least possibilities first
+
+    # when stuck, forkLevel will guess numbers with the least possibilities first
     forkLevel = 2
-    noProgression = 0
+
     while running == True:
         progressionTest = clone(sudokuMap)
-        #solveMap = numberLogic(solveMap, verticalMap, blockMap)
         solveMap = numberLogic(sudokuMap, solveMap)
         sudokuMap = mapFiller(sudokuMap, solveMap)
         solveMap = numberLogic2(sudokuMap, solveMap)
         sudokuMap = mapFiller(sudokuMap, solveMap)
-        sudokuPrint(sudokuMap)
+        #sudokuPrint(sudokuMap)
 
         # ugly test if it is solved
         solved = 0
@@ -214,10 +212,6 @@ def recursionTest(sudokuMap, testDepth):
             return False
 
         if sudokuMap == progressionTest:
-            noProgression += 1
-        else:
-            noProgression = 0
-        if noProgression == 1:
             henk = True
             while forkLevel < 10 and henk == True:
                 for Y in range(9):
@@ -238,4 +232,5 @@ def recursionTest(sudokuMap, testDepth):
 
             running = False
 
-recursionTest(sudokuMap, 3)
+
+recursionTest(testPuzzle5, 3)
