@@ -52,7 +52,7 @@ testPuzzle5 = [['7', '.', '.', '.', '3', '.', '4', '.', '.'],
               ['5', '.', '.', '.', '6', '.', '.', '.', '.'],
               ['.', '.', '6', '.', '4', '.', '.', '2', '.']]
 
-sudokuMap = testPuzzle4
+sudokuMap = testPuzzle
 
 
 def clone(inputList):
@@ -104,7 +104,7 @@ def block(sudokuMap):
     return blockMap
 
 
-def numberLogic(solveMap):
+def numberLogic(sudokuMap, solveMap):
     newSolveMap = clone(solveMap)
     verticalMap = vertical(sudokuMap)
     blockMap = block(sudokuMap)
@@ -128,7 +128,7 @@ def numberLogic(solveMap):
     return newSolveMap
 
 
-def numberLogic2(solveMap):
+def numberLogic2(sudokuMap, solveMap):
     newSolveMap = clone(solveMap)
     for Y in range(9):
         for X in range(9):
@@ -193,14 +193,14 @@ def recursionTest(sudokuMap, testDepth):
     solveMap = [[["1", "2", "3", "4", "5", "6", "7", "8", "9"] for i in range(9)] for j in range(9)]
     running = True
     # when stuck, forkLevel guess numbers with the least possibilities first
-    forkLevel = 3
+    forkLevel = 2
     noProgression = 0
     while running == True:
         progressionTest = clone(sudokuMap)
         #solveMap = numberLogic(solveMap, verticalMap, blockMap)
-        solveMap = numberLogic(solveMap)
+        solveMap = numberLogic(sudokuMap, solveMap)
         sudokuMap = mapFiller(sudokuMap, solveMap)
-        solveMap = numberLogic2(solveMap)
+        solveMap = numberLogic2(sudokuMap, solveMap)
         sudokuMap = mapFiller(sudokuMap, solveMap)
         sudokuPrint(sudokuMap)
 
@@ -217,7 +217,7 @@ def recursionTest(sudokuMap, testDepth):
             noProgression += 1
         else:
             noProgression = 0
-        if noProgression == 2:
+        if noProgression == 1:
             henk = True
             while forkLevel < 10 and henk == True:
                 for Y in range(9):
@@ -228,29 +228,12 @@ def recursionTest(sudokuMap, testDepth):
                             break
                         if len(solveMap[Y][X]) == forkLevel:
                             for numbers in solveMap[Y][X]:
-                                #print("kaas")
-                                #print(numbers)
-                                #print(sudokuMap[Y][X])
-                                #print("hoi")
                                 forkTest = clone(sudokuMap)
                                 forkTest[Y][X] = numbers
-                                if Y == 0 and X == 1:
-                                    print("depth:")
-                                    print(testDepth)
-                                    print(numbers)
-                                    print(forkTest[Y][X])
-                                    sudokuPrint(sudokuMap)
-                                    sudokuPrint(forkTest)
-                                    print("^^^henk")
-                                #print(numbers)
-                                #print(forkTest[Y][X])
-                                #print("niet kaas")
                                 henk = recursionTest(forkTest, testDepth)
                                 if henk == False:
                                     break
-                #print("+++++++++++++++")
-                #print(forkLevel)
-                #print("-------------")
+
                 forkLevel += 1
 
             running = False
