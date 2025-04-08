@@ -32,7 +32,27 @@ testPuzzle3 = [['.', '8', '7', '5', '6', '4', '3', '2', '.'],
               ['8', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['1', '2', '3', '.', '5', '6', '7', '8', '9']]
 
-sudokuMap = testPuzzle
+testPuzzle4 = [['.', '8', '.', '.', '3', '.', '4', '0', '.'],
+              ['.', '.', '.', '.', '5', '.', '.', '.', '1'],
+              ['.', '.', '.', '.', '.', '4', '5', '8', '.'],
+              ['.', '5', '7', '.', '.', '2', '.', '9', '.'],
+              ['9', '.', '.', '.', '.', '.', '.', '.', '4'],
+              ['.', '3', '.', '4', '.', '.', '6', '5', '.'],
+              ['.', '7', '9', '2', '.', '.', '.', '.', '.'],
+              ['5', '.', '.', '.', '6', '.', '.', '.', '.'],
+              ['.', '.', '6', '.', '4', '.', '.', '2', '.']]
+
+testPuzzle5 = [['.', '8', '.', '.', '3', '.', '4', '0', '.'],
+              ['.', '.', '.', '.', '5', '.', '.', '.', '1'],
+              ['.', '.', '.', '.', '.', '4', '5', '8', '.'],
+              ['.', '5', '7', '.', '.', '2', '.', '9', '.'],
+              ['9', '.', '.', '.', '.', '.', '.', '.', '4'],
+              ['.', '3', '.', '4', '.', '.', '6', '5', '.'],
+              ['.', '7', '9', '2', '.', '.', '.', '.', '.'],
+              ['5', '.', '.', '.', '6', '.', '.', '.', '.'],
+              ['.', '.', '6', '.', '4', '.', '.', '2', '.']]
+
+sudokuMap = testPuzzle5
 
 
 def clone(inputList):
@@ -84,8 +104,10 @@ def block(sudokuMap):
     return blockMap
 
 
-def numberLogic(solveMap, verticalMap, blockMap):
+def numberLogic(solveMap):
     newSolveMap = clone(solveMap)
+    verticalMap = vertical(sudokuMap)
+    blockMap = block(sudokuMap)
     for Y in range(9):
         for X in range(9):
             if sudokuMap[Y][X] in "123456789":
@@ -165,8 +187,8 @@ def recursionTest(sudokuMap, testDepth):
     testDepth += -1
     if testDepth == 0:
         return True
-    verticalMap = vertical(sudokuMap)
-    blockMap = block(sudokuMap)
+    #verticalMap = vertical(sudokuMap)
+    #blockMap = block(sudokuMap)
     solveMap = [[["1", "2", "3", "4", "5", "6", "7", "8", "9"] for i in range(9)] for j in range(9)]
     running = True
     # when stuck, forkLevel guess numbers with the least possibilities first
@@ -174,6 +196,7 @@ def recursionTest(sudokuMap, testDepth):
     while running == True:
         progressionTest = clone(sudokuMap)
         #solveMap = numberLogic(solveMap, verticalMap, blockMap)
+        solveMap = numberLogic(solveMap)
         sudokuMap = mapFiller(sudokuMap, solveMap)
         solveMap = numberLogic2(solveMap)
         sudokuMap = mapFiller(sudokuMap, solveMap)
@@ -185,6 +208,7 @@ def recursionTest(sudokuMap, testDepth):
             if '.' in Y:
                 solved += 1
         if solved == 0:
+            sudokuPrint(sudokuMap)
             return False
 
         if sudokuMap == progressionTest:
@@ -198,17 +222,17 @@ def recursionTest(sudokuMap, testDepth):
                             break
                         if len(solveMap[Y][X]) == forkLevel:
                             for numbers in solveMap[Y][X]:
-                                #print("hoi")
+                                print("hoi")
                                 forkTest = clone(sudokuMap)
                                 forkTest[Y][X] = numbers
                                 henk = recursionTest(forkTest, testDepth)
                                 if henk == False:
                                     break
-                print("+++++++++++++++")
-                print(forkLevel)
-                print("-------------")
+                #print("+++++++++++++++")
+                #print(forkLevel)
+                #print("-------------")
                 forkLevel += 1
 
             running = False
 
-recursionTest(sudokuMap, 3)
+recursionTest(sudokuMap, 4)
