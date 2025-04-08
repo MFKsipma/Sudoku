@@ -2,6 +2,16 @@
 
 #https://news.nd.edu/news/notre-dame-researcher-helps-make-sudoku-puzzles-less-puzzling/
 
+testPuzzle0 = [['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+
 testPuzzle = [['8', '.', '.', '4', '.', '6', '.', '.', '7'],
               ['.', '.', '.', '.', '.', '.', '4', '.', '.'],
               ['.', '1', '.', '.', '.', '.', '6', '5', '.'],
@@ -215,22 +225,16 @@ def recursionTest(sudokuMap, testDepth):
             henk = True
             while forkLevel < 10 and henk == True:
                 for Y in range(9):
-                    if henk == False:
-                        break
                     for X in range(9):
-                        if henk == False:
-                            break
                         if len(solveMap[Y][X]) == forkLevel:
                             for numbers in solveMap[Y][X]:
                                 forkTest = clone(sudokuMap)
                                 forkTest[Y][X] = numbers
                                 henk = recursionTest(forkTest, testDepth)
                                 if henk == False:
-                                    break
-
+                                    return False
                 forkLevel += 1
-
             running = False
 
 
-recursionTest(testPuzzle5, 3)
+recursionTest(testPuzzle0, 90)
