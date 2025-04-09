@@ -1,46 +1,12 @@
-#sudokuMap = [[["."] for i in range(9)] for j in range(9)]
-
-#https://news.nd.edu/news/notre-dame-researcher-helps-make-sudoku-puzzles-less-puzzling/
-
-testPuzzle0 = [['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+testPuzzle0 = [['1', '2', '3', '4', '5', '6', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '9', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '9', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
-
-testPuzzle = [['8', '.', '.', '4', '.', '6', '.', '.', '7'],
-              ['.', '.', '.', '.', '.', '.', '4', '.', '.'],
-              ['.', '1', '.', '.', '.', '.', '6', '5', '.'],
-              ['5', '.', '9', '.', '3', '.', '7', '8', '.'],
-              ['.', '.', '.', '.', '7', '.', '.', '.', '.'],
-              ['.', '4', '8', '.', '2', '.', '1', '.', '3'],
-              ['.', '5', '2', '.', '.', '.', '.', '9', '.'],
-              ['.', '.', '1', '.', '.', '.', '.', '.', '.'],
-              ['3', '.', '.', '9', '.', '2', '.', '.', '5']]
-
-testPuzzle2 = [['8', '.', '.', '4', '.', '6', '.', '.', '7'],
-              ['.', '.', '.', '.', '1', '.', '4', '1', '.'],
-              ['.', '1', '.', '.', '.', '.', '6', '5', '.'],
-              ['5', '.', '9', '.', '3', '1', '7', '8', '.'],
-              ['.', '.', '1', '.', '7', '.', '.', '.', '.'],
-              ['.', '4', '8', '.', '2', '.', '1', '.', '3'],
-              ['.', '5', '2', '1', '.', '.', '.', '9', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '1'],
-              ['.', '.', '7', '9', '.', '2', '.', '.', '5']]
-
-testPuzzle3 = [['.', '8', '7', '5', '6', '4', '3', '2', '.'],
-              ['2', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['3', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['4', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['5', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['6', '.', '.', '.', '.', '.', '5', '.', '.'],
-              ['7', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['8', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['1', '2', '3', '.', '5', '6', '7', '8', '9']]
+              ['.', '.', '.', '.', '.', '.', '.', '9', '.']]
 
 testPuzzle4 = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
               ['.', '.', '.', '.', '5', '.', '.', '.', '1'],
@@ -51,19 +17,6 @@ testPuzzle4 = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
               ['.', '7', '9', '2', '.', '.', '.', '.', '.'],
               ['5', '.', '.', '.', '6', '.', '.', '.', '.'],
               ['.', '.', '6', '.', '4', '.', '.', '2', '.']]
-
-testPuzzle5 = [['7', '.', '.', '.', '3', '.', '4', '.', '.'],
-              ['.', '.', '.', '.', '5', '.', '.', '.', '1'],
-              ['.', '.', '.', '.', '.', '4', '5', '8', '.'],
-              ['.', '5', '7', '.', '.', '2', '.', '9', '.'],
-              ['9', '.', '.', '.', '.', '.', '.', '.', '4'],
-              ['.', '3', '.', '4', '.', '.', '6', '5', '.'],
-              ['.', '7', '9', '2', '.', '.', '.', '.', '.'],
-              ['5', '.', '.', '.', '6', '.', '.', '.', '.'],
-              ['.', '.', '6', '.', '4', '.', '.', '2', '.']]
-
-#sudokuMap = testPuzzle5
-
 
 def clone(inputList):
     newlist = []
@@ -113,7 +66,6 @@ def block(sudokuMap):
             mapCounter += 1
     return blockMap
 
-
 def numberLogic(sudokuMap, solveMap):
     newSolveMap = clone(solveMap)
     verticalMap = vertical(sudokuMap)
@@ -127,14 +79,19 @@ def numberLogic(sudokuMap, solveMap):
                 # test if the number is in horizontal rows
                 if numbers in sudokuMap[Y]:
                     newSolveMap[Y][X].remove(numbers)
+                    if Y == 0 and X == 7:
+                        print(newSolveMap[Y][X])
                 # test if the number is in vertical rows
                 elif numbers in verticalMap[X]:
                     newSolveMap[Y][X].remove(numbers)
+                    #if Y == 0 and X == 7:
+                        #print("V")
+                        #print(newSolveMap[Y][X])
                 # test if the number is in blocks
                 elif numbers in blockMap[(X // 3) + ((Y // 3) * 3)]:
                     newSolveMap[Y][X].remove(numbers)
+    print(newSolveMap[0][7])
     return newSolveMap
-
 
 def numberLogic2(sudokuMap, solveMap):
     newSolveMap = clone(solveMap)
@@ -162,7 +119,8 @@ def numberLogic2(sudokuMap, solveMap):
                     newSolveMap[Y][X] = [numbers]
                     break
                 # test if the number is unique in blocks
-                hier gebeurt iets raars want het is nodig ?
+                #is this actually needed ?
+                """
                 blockSolveMap = block(solveMap)
                 numberInRow = 0
                 for blocks in blockSolveMap[(X // 3) + ((Y // 3) * 3)]:
@@ -172,8 +130,8 @@ def numberLogic2(sudokuMap, solveMap):
                     newSolveMap[Y][X] = [numbers]
                     # ff kijken of break werkt
                     break
+                """
     return newSolveMap
-
 
 def mapFiller(sudokuMap, solveMap):
     for Y in range(9):
@@ -182,53 +140,13 @@ def mapFiller(sudokuMap, solveMap):
                 sudokuMap[Y][X] = solveMap[Y][X][0]
     return sudokuMap
 
+sudokuMap = testPuzzle0
 
-def recursionTest(sudokuMap, printFirstSolved, completedMaps):
-    solveMap = [[["1", "2", "3", "4", "5", "6", "7", "8", "9"] for i in range(9)] for j in range(9)]
-    running = True
+solveMap = [[["1", "2", "3", "4", "5", "6", "7", "8", "9"] for i in range(9)] for j in range(9)]
 
-    # when stuck, forkLevel will guess numbers with the least possibilities first
-    forkLevel = 2
 
-    while True:
-        progressionTest = clone(sudokuMap)
-        solveMap = numberLogic(sudokuMap, solveMap)
-        sudokuMap = mapFiller(sudokuMap, solveMap)
-        solveMap = numberLogic2(sudokuMap, solveMap)
-        sudokuMap = mapFiller(sudokuMap, solveMap)
-
-        # ugly test if it is solved
-        solved = 0
-        for Y in sudokuMap:
-            if '.' in Y:
-                solved = 1
-                break
-        if solved == 0:
-            if printFirstSolved == True:
-                sudokuPrint(sudokuMap)
-                return False
-            else:
-                #sudokuPrint(sudokuMap)
-                if sudokuMap in completedMaps:
-                    continue
-                else:
-                    sudokuPrint(sudokuMap)
-                    completedMaps.append(sudokuMap)
-                    return completedMaps
-
-        if sudokuMap == progressionTest:
-            while forkLevel < 10:
-                for Y in range(9):
-                    for X in range(9):
-                        if len(solveMap[Y][X]) == forkLevel:
-                            for numbers in solveMap[Y][X]:
-                                forkTest = clone(sudokuMap)
-                                forkTest[Y][X] = numbers
-                                completedMaps = recursionTest(forkTest, printFirstSolved, completedMaps)
-                                if completedMaps == False:
-                                    return False
-                forkLevel += 1
-            return completedMaps
-
-printFirstSolved = False
-recursionTest(testPuzzle5, printFirstSolved, [])
+for i in range(2):
+    solveMap = numberLogic(sudokuMap, solveMap)
+    solveMap = numberLogic2(sudokuMap, solveMap)
+    mapFiller(sudokuMap, solveMap)
+    sudokuPrint(sudokuMap)
