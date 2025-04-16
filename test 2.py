@@ -1,12 +1,22 @@
 testPuzzle0 = [['1', '2', '3', '4', '5', '6', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '9', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '9', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '9', '.']]
+
+testPuzzle6 = [['1', '2', '3', '4', '5', '6', '.', '.', '.'],
+              ['7', '8', '.', '3', '2', '1', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '9', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '9', '.', '.']]
 
 testPuzzle4 = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
               ['.', '.', '.', '.', '5', '.', '.', '.', '1'],
@@ -120,7 +130,7 @@ def numberLogic2(sudokuMap, solveMap):
                     break
                 # test if the number is unique in blocks
                 #is this actually needed ?
-                """
+                #"""
                 blockSolveMap = block(solveMap)
                 numberInRow = 0
                 for blocks in blockSolveMap[(X // 3) + ((Y // 3) * 3)]:
@@ -130,7 +140,7 @@ def numberLogic2(sudokuMap, solveMap):
                     newSolveMap[Y][X] = [numbers]
                     # ff kijken of break werkt
                     break
-                """
+                #"""
     return newSolveMap
 
 def mapFiller(sudokuMap, solveMap):
@@ -140,13 +150,14 @@ def mapFiller(sudokuMap, solveMap):
                 sudokuMap[Y][X] = solveMap[Y][X][0]
     return sudokuMap
 
-sudokuMap = testPuzzle0
+sudokuMap = testPuzzle6
 
 solveMap = [[["1", "2", "3", "4", "5", "6", "7", "8", "9"] for i in range(9)] for j in range(9)]
 
 
 for i in range(2):
     solveMap = numberLogic(sudokuMap, solveMap)
+    mapFiller(sudokuMap, solveMap)
     solveMap = numberLogic2(sudokuMap, solveMap)
     mapFiller(sudokuMap, solveMap)
     sudokuPrint(sudokuMap)

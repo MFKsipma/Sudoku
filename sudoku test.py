@@ -162,7 +162,7 @@ def numberLogic2(sudokuMap, solveMap):
                     newSolveMap[Y][X] = [numbers]
                     break
                 # test if the number is unique in blocks
-                hier gebeurt iets raars want het is nodig ?
+                #"""
                 blockSolveMap = block(solveMap)
                 numberInRow = 0
                 for blocks in blockSolveMap[(X // 3) + ((Y // 3) * 3)]:
@@ -172,6 +172,7 @@ def numberLogic2(sudokuMap, solveMap):
                     newSolveMap[Y][X] = [numbers]
                     # ff kijken of break werkt
                     break
+                #"""
     return newSolveMap
 
 
@@ -231,4 +232,4 @@ def recursionTest(sudokuMap, printFirstSolved, completedMaps):
             return completedMaps
 
 printFirstSolved = False
-recursionTest(testPuzzle5, printFirstSolved, [])
+recursionTest(testPuzzle0, printFirstSolved, [])
