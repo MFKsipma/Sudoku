@@ -67,3 +67,20 @@ henk[3] = 4
 print(henk)
 print(np.where(henk[:, 1] == 4))
 print(np.argwhere(henk == 4))
+
+blabla = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
+
+#print(blabla)
+
+#blabla = blabla[0, :, 1]
+
+blabla[0, :, 1] = 0
+blabla[0, :, 3] = False
+
+print(2 in blabla)
+
+#print(np.isin(blabla[:,2], 2, kind="table" ))
+
+print(blabla)
+
+print(blabla[0, 0, 0] == True)
