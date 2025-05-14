@@ -26,21 +26,26 @@ for Y in range(9):
         else:
             kaas[Y, X] = int(testPuzzle[Y][X])
 print(kaas)
-sudokuMap = np.array(kaas)
+#sudokuMap = np.array(kaas)
+
+sudokuMap = kaas
 
 #print(sudokuMap)
 
 def sudokuPrint(sudokuMap):
     printMap = " _ _ _ _ _ _ _ _ _ _ _ _ _\n"
-    for i in range(27):
-        printMap += " |"
-        for j in sudokuMap[i * 3: i * 3 + 3]:
-            printMap += " " + str(j)
+    for i in range(9):
+        for k in range(3):
+            printMap += " |"
+            for j in range(3):
+                if sudokuMap[i, (k * 3) + j] == 0:
+                    printMap += "  "
+                else:
+                    printMap += " " + str(sudokuMap[i, (k * 3) + j])
 
-        if i % 3 == 2:
-            printMap += " |\n"
+        printMap += " |\n"
 
-        if i % 9 == 8 and i != 26:
+        if i % 3 == 2 and i != 8:
             printMap += " | - - - + - - - + - - - |\n"
     printMap += " ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾"
     print(printMap)
@@ -93,14 +98,23 @@ def numberLogic(sudokuMap, solveMap):
 def mapFiller(sudokuMap):
     for Y in range(9):
         for X in range(9):
+            if sudokuMap[Y, X] != 0:
+                continue
             possibleNumbers = np.nonzero(solveMap[Y, X])
             if len(possibleNumbers[0]) == 1:
+                number = possibleNumbers[0][0]
+                #print(number)
                 #print(possibleNumbers)
-                sudokuMap[Y, X] = solveMap[Y, X, possibleNumbers]
+                #sudokuMap[Y, X] = solveMap[Y, X, possibleNumbers]
+                #sudokuMap[Y, X] = solveMap[Y, X, number]
+                sudokuMap[Y, X] = solveMap[Y, X, possibleNumbers[0][0]]
 
-print(sudokuMap)
+sudokuPrint(sudokuMap)
 
-#for i in range(20):
-numberLogic(sudokuMap, solveMap)
-print(solveMap)
-#mapFiller(sudokuMap)
+for i in range(20):
+    numberLogic(sudokuMap, solveMap)
+    #print(solveMap)
+    mapFiller(sudokuMap)
+    sudokuPrint(sudokuMap)
+
+# cProfile
