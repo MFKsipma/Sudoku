@@ -1,8 +1,11 @@
 import numpy as np
+#import cProfile
+#import timeit
 
 import time
 from datetime import timedelta
 start_time = time.monotonic()
+
 
 
 testPuzzle = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
@@ -73,14 +76,21 @@ for Y in range(9):
 
 print(solveMap)
 """
+# dit moet buiten recursive
+def numberLogicInit(sudokuMap, solveMap):
+    for Y in range(9):
+        for X in range(9):
+            if sudokuMap[Y, X] != 0:
+                solveMap[Y, X] = 0
+
+# nodig voor logica, cube[nummer][y-as = 0, x-as = 1]
+cube = []
+for Y in range(3):
+    for X in range(3):
+        cube.append([Y *3, X * 3])
 
 #check over een hele lijn heen en haal alles uit die lijn
 def numberLogic(sudokuMap, solveMap):
-    cube = []
-    for Y in range(3):
-        for X in range(3):
-            cube.append([Y *3, X * 3])
-
     for Y in range(9):
         #if not np.any(solveMap[Y]):
         #    print("hoi")
@@ -92,7 +102,19 @@ def numberLogic(sudokuMap, solveMap):
                 solveMap[:, Y, testNumber] = 0
             if testNumber + 1 in sudokuMap[cube[Y][0]:cube[Y][0] + 3, cube[Y][1]:cube[Y][1] + 3]:
                 solveMap[cube[Y][0]:cube[Y][0] + 3, cube[Y][1]:cube[Y][1] + 3, testNumber] = 0
-#print(solveMap)
+
+def numberLogic2(sudokuMap, solveMap):
+    # scant 3 rijen tegelijk om te zien of 1 getal er maar 1 keer kan staan
+    for Y in range(3):
+        #print(solveMap[Y * 3: Y * 3 + 3, :])
+        #print("hoi")
+        for number in range(9):
+            #print(solveMap[Y * 3: Y * 3 + 3, :, number])
+            #print("hoi")
+            possibleNumbers = np.nonzero(solveMap[Y * 3: Y * 3 + 3, :, number])
+            if len(possibleNumbers[0]) == 1:
+                print(possibleNumbers[0][0])
+                print(possibleNumbers)
 
 #dit werkt nog niet
 def mapFiller(sudokuMap):
@@ -109,12 +131,21 @@ def mapFiller(sudokuMap):
                 #sudokuMap[Y, X] = solveMap[Y, X, number]
                 sudokuMap[Y, X] = solveMap[Y, X, possibleNumbers[0][0]]
 
+
+numberLogicInit(sudokuMap, solveMap)
+
 sudokuPrint(sudokuMap)
 
-for i in range(20):
+for i in range(1):
     numberLogic(sudokuMap, solveMap)
-    #print(solveMap)
+    #numberLogic2(sudokuMap, solveMap)
+    print(solveMap)
     mapFiller(sudokuMap)
+    #print("----------------------------")
+    #print(solveMap)
     sudokuPrint(sudokuMap)
 
+
 # cProfile
+
+# map filler 2 maken, cube kijken of er 1 getal uniek is

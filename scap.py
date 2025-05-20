@@ -14,7 +14,7 @@ boer = np.nonzero(henk)
 henk[boer] = 3
 print(henk)
 
-"""
+#"""
 kaas = np.full(9, 0, dtype="int8")
 kaas[8] = 2
 melk = [0, 0, 0, 0, 0, 0, 0, 0, 2]
@@ -23,4 +23,4 @@ melk = [0, 0, 0, 0, 0, 0, 0, 0, 2]
 print(timeit.timeit("melk.count(0)", number=100000, globals=globals()))
 print(timeit.timeit("[0, 0, 0, 0, 0, 0, 0, 0, 2].count(0)", number=100000))
 print(timeit.timeit("np.nonzero(kaas)", number=100000, globals=globals()))
-"""
+#"""

@@ -2,6 +2,10 @@
 
 #https://news.nd.edu/news/notre-dame-researcher-helps-make-sudoku-puzzles-less-puzzling/
 
+import cProfile
+
+
+
 testPuzzle0 = [['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
@@ -231,5 +235,7 @@ def recursionTest(sudokuMap, printFirstSolved, completedMaps):
                 forkLevel += 1
             return completedMaps
 
-printFirstSolved = False
-recursionTest(testPuzzle0, printFirstSolved, [])
+printFirstSolved = True
+#recursionTest(testPuzzle0, printFirstSolved, [])
+
+cProfile.run('recursionTest(testPuzzle0, printFirstSolved, [])')
