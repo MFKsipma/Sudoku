@@ -235,7 +235,7 @@ def recursionTest(sudokuMap, printFirstSolved, completedMaps):
                 forkLevel += 1
             return completedMaps
 
-printFirstSolved = True
-#recursionTest(testPuzzle0, printFirstSolved, [])
+printFirstSolved = False
+recursionTest(testPuzzle5, printFirstSolved, [])
 
-cProfile.run('recursionTest(testPuzzle0, printFirstSolved, [])')
+#cProfile.run('recursionTest(testPuzzle0, printFirstSolved, [])')

@@ -6,7 +6,15 @@ import time
 from datetime import timedelta
 start_time = time.monotonic()
 
-
+testPuzzle0 = [['.', '.', '.', '.', '9', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['1', '1', '1', '.', '.', '.', '1', '1', '1'],
+              ['9', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '1', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '1', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '1', '.', '.', '.', '.', '.']]
 
 testPuzzle = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
               ['.', '.', '.', '.', '5', '.', '.', '.', '1'],
@@ -21,6 +29,8 @@ testPuzzle = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
 print(testPuzzle[0])
 # convert oude map naar nieuwe map
 kaas = np.zeros((9, 9), "int8")
+
+#testPuzzle = testPuzzle0
 
 for Y in range(9):
     for X in range(9):
@@ -105,16 +115,55 @@ def numberLogic(sudokuMap, solveMap):
 
 def numberLogic2(sudokuMap, solveMap):
     # scant 3 rijen tegelijk om te zien of 1 getal er maar 1 keer kan staan
-    for Y in range(3):
+    for Y in range(9):
         #print(solveMap[Y * 3: Y * 3 + 3, :])
         #print("hoi")
+        # non zero = skip ?
         for number in range(9):
             #print(solveMap[Y * 3: Y * 3 + 3, :, number])
             #print("hoi")
-            possibleNumbers = np.nonzero(solveMap[Y * 3: Y * 3 + 3, :, number])
+            """
+            # horizontal
+            possibleNumbers = np.nonzero(solveMap[Y, :, number])
             if len(possibleNumbers[0]) == 1:
+                print("hor")
+                print(Y)
                 print(possibleNumbers[0][0])
+                print(number + 1)
                 print(possibleNumbers)
+                print(solveMap[:, possibleNumbers[0][0], number])
+                sudokuMap[Y, possibleNumbers[0][0]] = solveMap[Y, possibleNumbers[0][0], number]
+                solveMap[Y, possibleNumbers[0][0]] = 0
+                # verticaal moet dit nummer ook uitgesloten worden op deze positie
+                solveMap[:, possibleNumbers[0][0], number] = 0
+                print(solveMap[Y, :, number])
+            
+            # vertical
+            possibleNumbers = np.nonzero(solveMap[:, Y, number])
+            if len(possibleNumbers[0]) == 1:
+                print("vert")
+                print(Y)
+                print(possibleNumbers[0][0])
+                print(number + 1)
+                print(possibleNumbers)
+                sudokuMap[possibleNumbers[0][0], Y] = solveMap[possibleNumbers[0][0], Y, number]
+                solveMap[possibleNumbers[0][0], Y] = 0
+                # horizontaal moet dit nummer ook uitgesloten worden op deze positie
+                solveMap[possibleNumbers[0][0], :, number] = 0
+                print(solveMap[:, Y, number])
+            #"""
+            # block
+            possibleNumbers = np.nonzero(solveMap[cube[Y][0]: cube[Y][0] + 3, cube[Y][1]: cube[Y][1] + 3, number])
+            if len(possibleNumbers[0]) == 1:
+                print("block")
+                print(Y)
+                print(possibleNumbers[0][0])
+                print(number + 1)
+                print(possibleNumbers)
+
+
+
+
 
 #dit werkt nog niet
 def mapFiller(sudokuMap):
@@ -138,9 +187,9 @@ sudokuPrint(sudokuMap)
 
 for i in range(1):
     numberLogic(sudokuMap, solveMap)
-    #numberLogic2(sudokuMap, solveMap)
-    print(solveMap)
+    #print(solveMap)
     mapFiller(sudokuMap)
+    numberLogic2(sudokuMap, solveMap)
     #print("----------------------------")
     #print(solveMap)
     sudokuPrint(sudokuMap)
@@ -148,4 +197,4 @@ for i in range(1):
 
 # cProfile
 
-# map filler 2 maken, cube kijken of er 1 getal uniek is
+# je was bezich met logica 2
