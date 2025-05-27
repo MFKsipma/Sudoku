@@ -114,9 +114,10 @@ def numberLogic(sudokuMap, solveMap):
                 solveMap[cube[Y][0]:cube[Y][0] + 3, cube[Y][1]:cube[Y][1] + 3, testNumber] = 0
 
 def testNumberLogic(solveMap, Y, X, number):
+    solveMap[Y, X] = 0
     solveMap[Y, :, number] = 0
     solveMap[:, X, number] = 0
-    solveMap[Y//3: Y//3 + 3, X//3: X//3 + 3, number] = 0
+    solveMap[Y//3*3: Y//3*3 + 3, X//3*3: X//3*3 + 3, number] = 0
 
 def numberLogic2(sudokuMap, solveMap):
     # scant 3 rijen tegelijk om te zien of 1 getal er maar 1 keer kan staan
@@ -130,9 +131,9 @@ def numberLogic2(sudokuMap, solveMap):
             #"""
             # horizontal
             possibleNumbers = np.nonzero(solveMap[Y, :, number])
-            # if len(possibleNumbers[0]) == 1:
-            #     sudokuMap[Y, possibleNumbers[0][0]] = solveMap[Y, possibleNumbers[0][0], number]
-            #     testNumberLogic(solveMap, Y, possibleNumbers[0][0], number)
+            if len(possibleNumbers[0]) == 1:
+                sudokuMap[Y, possibleNumbers[0][0]] = solveMap[Y, possibleNumbers[0][0], number]
+                testNumberLogic(solveMap, Y, possibleNumbers[0][0], number)
             #     """
             #     print("hor")
             #     print(Y)
@@ -149,9 +150,9 @@ def numberLogic2(sudokuMap, solveMap):
 
             # vertical
             possibleNumbers = np.nonzero(solveMap[:, Y, number])
-            # if len(possibleNumbers[0]) == 1:
-            #     sudokuMap[possibleNumbers[0][0], Y] = solveMap[possibleNumbers[0][0], Y, number]
-            #     testNumberLogic(solveMap, possibleNumbers[0][0], Y, number)
+            if len(possibleNumbers[0]) == 1:
+                sudokuMap[possibleNumbers[0][0], Y] = solveMap[possibleNumbers[0][0], Y, number]
+                testNumberLogic(solveMap, possibleNumbers[0][0], Y, number)
             #     """
             #     print("vert")
             #     print(Y)
@@ -210,6 +211,8 @@ for i in range(5):
     #print(solveMap)
     sudokuPrint(sudokuMap)
 
+def display():
+    return sudokuMap
 
 # cProfile
 
