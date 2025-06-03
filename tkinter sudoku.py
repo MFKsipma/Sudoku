@@ -25,31 +25,36 @@ for i in range(9):
     #     continue
     fieldButtonHolder.append([])
     for j in range(9):
-        x = 0
-        y = 0
-        btn = ttk.Button(master=frm, text=str(display[i][j]), width=2,
+        #change a 0 into a " "
+        buttonString = display[i][j]
+        if buttonString == 0:
+            buttonString = " "
+
+        btn = ttk.Button(master=frm, text=str(buttonString), width=2,
                          command=lambda position=[i, j]: coords(position))
-        if i%2 == 0:
-            y = 20
-        if j%3 == 0:
-            x = 20
-        btn.grid(column=j, row=i, ipady=0, ipadx=0)
+
+        btn.grid(column=j + j//3, row=i + i//3, ipady=0, ipadx=0)
         fieldButtonHolder[i].append(btn)
-#separator = ttk.Separator(frm, orient="horizontal")
-#separator.place(relx=0, rely=0.5, relwidth=1, relheight=1)
+
+ttk.Label(frm, width=1).grid(column=3, row=0)
+ttk.Label(frm, width=1).grid(column=7, row=0)
+ttk.Label(frm, width=1).grid(column=0, row=3)
+ttk.Label(frm, width=1).grid(column=0, row=7)
+
 for i in range(9):
     btn = ttk.Button(master=frm2, text=str(i+1), width=2,
                      command=lambda number=i: numberPlacer(number))
     btn.grid(column=i, row=11, ipady=0, ipadx=0, pady=0)
     numberButtonHolder.append(btn)
 
+#btn = ttk.Button(master=frm2, text=str(i+1), width=2, command=lambda number=i: numberPlacer(number))
 
-frm3 = tkinter.ttk.Frame(master=window, padding=20)
-frm3.grid(row=3, column=1, ipady=0, ipadx=0)
-henk1 = ttk.Button(master=frm3, text=str(1), width=2, command=print("henk"))
-henk1.grid(column=1, row=1, ipady=0, ipadx=0, pady=0)
-henk2 = ttk.Button(master=frm3, text=str(1), width=2, command=print("henk"))
-henk2.grid(column=3, row=1, ipady=0, ipadx=0, pady=0)
-ttk.Label(frm3, width=2).grid(column=2, row=0)
+# frm3 = tkinter.ttk.Frame(master=window, padding=20)
+# frm3.grid(row=3, column=1, ipady=0, ipadx=0)
+# henk1 = ttk.Button(master=frm3, text=str(1), width=2, command=print("henk"))
+# henk1.grid(column=1, row=1, ipady=0, ipadx=0, pady=0)
+# henk2 = ttk.Button(master=frm3, text=str(1), width=2, command=print("henk"))
+# henk2.grid(column=3, row=1, ipady=0, ipadx=0, pady=0)
+# ttk.Label(frm3, width=1).grid(column=2, row=0)
 window.mainloop()
 

@@ -211,8 +211,24 @@ for i in range(5):
     #print(solveMap)
     sudokuPrint(sudokuMap)
 
+
+
+melk = np.zeros((9, 9), "int8")
+
+
+
+for Y in range(9):
+    for X in range(9):
+        if testPuzzle[Y][X] == ".":
+            continue
+        else:
+            melk[Y, X] = int(testPuzzle[Y][X])
+
+
+
+
 def display():
-    return sudokuMap
+    return melk
 
 # cProfile
 
