@@ -5,19 +5,25 @@ import numpy_test
 
 posHolder = [[0, 0]]
 
+display = numpy_test.display()
+
 def coords(position):
     posHolder[0] = position
     #buttonHolder[bla[0]][bla[1]].config(text="0")
     print(posHolder)
+    print(display)
 def numberPlacer(number):
-    fieldButtonHolder[posHolder[0][0]][posHolder[0][1]].config(text=str(number+1))
+    fieldButtonHolder[posHolder[0][0]][posHolder[0][1]].config(text=number if number != 0 else " ")
+    display[posHolder[0][0], posHolder[0][1]] = number
+    print("hoi")
+    print(number)
 
 window = tkinter.Tk()
 frm = tkinter.ttk.Frame(master=window, padding=20)
 frm.grid(row=1, column=1, ipady=0, ipadx=0)
 frm2 = tkinter.ttk.Frame(master=window, padding=20)
 frm2.grid(row=2, column=1, ipady=0, ipadx=0)
-display = numpy_test.display()
+
 fieldButtonHolder = []
 numberButtonHolder = []
 for i in range(9):
@@ -41,8 +47,8 @@ ttk.Label(frm, width=1).grid(column=7, row=0)
 ttk.Label(frm, width=1).grid(column=0, row=3)
 ttk.Label(frm, width=1).grid(column=0, row=7)
 
-for i in range(9):
-    btn = ttk.Button(master=frm2, text=str(i+1), width=2,
+for i in range(10):
+    btn = ttk.Button(master=frm2, text=str(i), width=2,
                      command=lambda number=i: numberPlacer(number))
     btn.grid(column=i, row=11, ipady=0, ipadx=0, pady=0)
     numberButtonHolder.append(btn)
