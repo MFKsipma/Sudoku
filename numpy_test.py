@@ -16,6 +16,16 @@ testPuzzle0 = [['.', '.', '.', '.', '9', '.', '.', '.', '.'],
               ['.', '.', '.', '1', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '1', '.', '.', '.', '.', '.']]
 
+testPuzzle1 = [['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+
 testPuzzle = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
               ['.', '.', '.', '.', '5', '.', '.', '.', '1'],
               ['.', '.', '.', '.', '.', '4', '5', '8', '.'],
@@ -28,7 +38,7 @@ testPuzzle = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
 
 
 # convert oude map naar nieuwe map
-#testPuzzle = testPuzzle0
+testPuzzle = testPuzzle1
 def puzzleConvert(testPuzzle):
     convertedMap = np.zeros((9, 9), "int8")
     for Y in range(9):
@@ -183,7 +193,7 @@ def mapFiller(sudokuMap):
 
 numberLogicInit(sudokuMap, solveMap)
 
-def sudokuSolver(sudokuMap, solveMap):
+def sudokuSolver(sudokuMap, solveMap, options):
     while True:
         noChangesCounter = 0
         numberLogic(sudokuMap, solveMap)
@@ -193,7 +203,10 @@ def sudokuSolver(sudokuMap, solveMap):
         print(noChangesCounter)
         if noChangesCounter == 162:
             print("Map incomplete")
-            break
+            if options == False:
+                break
+            else:
+                break
         if 0 not in sudokuMap:
             print("Map completed")
             break
@@ -203,3 +216,5 @@ def display():
     return puzzleConvert(testPuzzle)
 
 # cProfile
+
+sudokuSolver(sudokuMap, solveMap, True)
