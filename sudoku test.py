@@ -66,7 +66,7 @@ testPuzzle5 = [['7', '.', '.', '.', '3', '.', '4', '.', '.'],
               ['5', '.', '.', '.', '6', '.', '.', '.', '.'],
               ['.', '.', '6', '.', '4', '.', '.', '2', '.']]
 
-#sudokuMap = testPuzzle5
+sudokuMap = testPuzzle0
 
 
 def clone(inputList):
@@ -236,6 +236,6 @@ def recursionTest(sudokuMap, printFirstSolved, completedMaps):
             return completedMaps
 
 printFirstSolved = False
-recursionTest(testPuzzle5, printFirstSolved, [])
+recursionTest(sudokuMap, printFirstSolved, [])
 
 #cProfile.run('recursionTest(testPuzzle0, printFirstSolved, [])')

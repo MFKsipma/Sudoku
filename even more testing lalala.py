@@ -1,5 +1,16 @@
 import numpy as np
 henk = np.zeros((9, 9, 9), "int8")
-henk[:] = 8
-print(henk)
-print(np.nonzero(henk))
+# # henk[3:5, :] = 8
+henk[2,3,4] = 8
+henk[1,2,3] = 8
+# print(henk)
+# print(np.nonzero(henk))
+# print(np.flatnonzero(henk))
+# print(np.ndarray.nonzero(henk))
+print(np.count_nonzero(henk))
+
+kaas = np.copy(henk)
+
+# henk[:] = 8
+# # print(henk)
+# print(kaas)

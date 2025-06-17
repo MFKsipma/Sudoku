@@ -108,36 +108,16 @@ def testNumberLogic(solveMap, Y, X, number):
     solveMap[:, X, number] = 0
     solveMap[Y//3*3: Y//3*3 + 3, X//3*3: X//3*3 + 3, number] = 0
 
-# scant 3 rijen tegelijk om te zien of 1 getal er maar 1 keer kan staan
+# scant om te zien of 1 getal er maar 1 keer kan staan
 def numberLogic2(sudokuMap, solveMap):
     noChangesCounter = 81
     for Y in range(9):
-        #print(solveMap[Y * 3: Y * 3 + 3, :])
-        #print("hoi")
-        # non zero = skip ?
         for number in range(9):
-            #print(solveMap[Y * 3: Y * 3 + 3, :, number])
-            #print("hoi")
-            #"""
-            # horizontal
             possibleNumbers = np.nonzero(solveMap[Y, :, number])
             if len(possibleNumbers[0]) == 1:
                 sudokuMap[Y, possibleNumbers[0][0]] = solveMap[Y, possibleNumbers[0][0], number]
                 testNumberLogic(solveMap, Y, possibleNumbers[0][0], number)
                 noChangesCounter += -1
-            #     """
-            #     print("hor")
-            #     print(Y)
-            #     print(possibleNumbers[0][0])
-            #     print(number + 1)
-            #     print(possibleNumbers)
-            #     print(solveMap[:, possibleNumbers[0][0], number])
-            #     sudokuMap[Y, possibleNumbers[0][0]] = solveMap[Y, possibleNumbers[0][0], number]
-            #     solveMap[Y, possibleNumbers[0][0]] = 0
-            #     # verticaal moet dit nummer ook uitgesloten worden op deze positie
-            #     solveMap[:, possibleNumbers[0][0], number] = 0
-            #     print(solveMap[Y, :, number])
-            #     """
 
             # vertical
             possibleNumbers = np.nonzero(solveMap[:, Y, number])
@@ -145,39 +125,19 @@ def numberLogic2(sudokuMap, solveMap):
                 sudokuMap[possibleNumbers[0][0], Y] = solveMap[possibleNumbers[0][0], Y, number]
                 testNumberLogic(solveMap, possibleNumbers[0][0], Y, number)
                 noChangesCounter += -1
-            #     """
-            #     print("vert")
-            #     print(Y)
-            #     print(possibleNumbers[0][0])
-            #     print(number + 1)
-            #     print(possibleNumbers)
-            #     sudokuMap[possibleNumbers[0][0], Y] = solveMap[possibleNumbers[0][0], Y, number]
-            #     solveMap[possibleNumbers[0][0], Y] = 0
-            #     # horizontaal moet dit nummer ook uitgesloten worden op deze positie
-            #     solveMap[possibleNumbers[0][0], :, number] = 0
-            #     print(solveMap[:, Y, number])
-            #     """
+
             # block
             possibleNumbers = np.nonzero(solveMap[cube[Y][0]: cube[Y][0] + 3, cube[Y][1]: cube[Y][1] + 3, number])
             if len(possibleNumbers[0]) == 1:
                 sudokuMap[cube[Y][0] + possibleNumbers[0][0], cube[Y][1] + possibleNumbers[1][0]] = number + 1
-                #print(possibleNumbers)
                 testNumberLogic(solveMap, cube[Y][0] + possibleNumbers[0][0], cube[Y][1] + possibleNumbers[1][0], number)
                 noChangesCounter += -1
-                """
-                print("block")
-                print(Y)
-                print(possibleNumbers[0][0])
-                print(number + 1)
-                print(possibleNumbers)
-                sudokuMap[cube[Y][0] + possibleNumbers[0][0], cube[Y][1] + possibleNumbers[1][0]] = number + 1
-                # moet andere logica nog uit sluiten
-                """
+
     return noChangesCounter
 
 
 #dit werkt nog niet
-def mapFiller(sudokuMap):
+def mapFiller(sudokuMap, solveMap):
     noChangesCounter = 81
     for Y in range(9):
         for X in range(9):
@@ -188,6 +148,7 @@ def mapFiller(sudokuMap):
                 sudokuMap[Y, X] = solveMap[Y, X, possibleNumbers[0][0]]
                 noChangesCounter += -1
                 continue
+
     return noChangesCounter
 
 
@@ -197,18 +158,35 @@ def sudokuSolver(sudokuMap, solveMap, options):
     while True:
         noChangesCounter = 0
         numberLogic(sudokuMap, solveMap)
-        noChangesCounter += mapFiller(sudokuMap)
+        noChangesCounter += mapFiller(sudokuMap, solveMap)
         noChangesCounter += numberLogic2(sudokuMap, solveMap)
-        sudokuPrint(sudokuMap)
-        print(noChangesCounter)
+        # sudokuPrint(sudokuMap)
+        # print(noChangesCounter)
         if noChangesCounter == 162:
-            print("Map incomplete")
+            # print("Map incomplete")
             if options == False:
                 break
             else:
+                forkLevel = 2
+                while forkLevel < 10:
+                    for Y in range(9):
+                        for X in range(9):
+                            if np.count_nonzero(solveMap[Y, X]) == forkLevel:
+                                for testNumbers in solveMap[Y, X]:
+                                    if testNumbers == 0:
+                                        continue
+                                    testSudokuMap = np.copy(sudokuMap)
+                                    testSudokuMap[Y, X] = testNumbers
+                                    testSolveMap = np.copy(solveMap)
+                                    testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
+                                    sudokuSolver(testSudokuMap, testSolveMap, True)
+
+
+                    forkLevel += 1
                 break
         if 0 not in sudokuMap:
             print("Map completed")
+            sudokuPrint(sudokuMap)
             break
 
 
