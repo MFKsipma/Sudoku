@@ -16,6 +16,16 @@ testPuzzle0 = [['.', '.', '.', '.', '9', '.', '.', '.', '.'],
               ['.', '.', '.', '1', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '1', '.', '.', '.', '.', '.']]
 
+testPuzzle00 = [['1', '1', '1', '1', '1', '1', '1', '1', '1'],
+              ['1', '1', '1', '1', '1', '1', '1', '1', '1'],
+              ['1', '1', '1', '1', '1', '1', '1', '1', '1'],
+              ['1', '1', '1', '1', '1', '1', '1', '1', '1'],
+              ['1', '1', '1', '1', '1', '1', '1', '1', '1'],
+              ['1', '1', '1', '1', '1', '1', '1', '1', '1'],
+              ['1', '1', '1', '1', '1', '1', '1', '.', '.'],
+              ['1', '1', '1', '1', '1', '1', '.', '.', '.'],
+              ['1', '1', '1', '1', '1', '1', '.', '.', '.']]
+
 testPuzzle1 = [['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
@@ -36,9 +46,23 @@ testPuzzle = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
               ['5', '.', '.', '.', '6', '.', '.', '.', '.'],
               ['.', '.', '6', '.', '4', '.', '.', '2', '.']]
 
+testPuzzle2 = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
+              ['.', '.', '.', '.', '5', '.', '.', '.', '1'],
+              ['.', '.', '.', '.', '.', '4', '.', '8', '.'],
+              ['.', '5', '7', '.', '1', '2', '.', '9', '.'],
+              ['9', '.', '.', '.', '.', '.', '.', '.', '4'],
+              ['1', '3', '.', '4', '.', '.', '6', '5', '.'],
+              ['.', '7', '9', '2', '.', '.', '.', '.', '.'],
+              ['5', '.', '.', '1', '6', '.', '.', '.', '.'],
+              ['.', '1', '6', '3', '4', '.', '.', '2', '.']]
+
 
 # convert oude map naar nieuwe map
-testPuzzle = testPuzzle1
+testPuzzle = testPuzzle00
+
+finishedMaps = []
+duplicateForks = []
+
 def puzzleConvert(testPuzzle):
     convertedMap = np.zeros((9, 9), "int8")
     for Y in range(9):
@@ -155,6 +179,8 @@ def mapFiller(sudokuMap, solveMap):
 numberLogicInit(sudokuMap, solveMap)
 
 def sudokuSolver(sudokuMap, solveMap, options):
+    if len(duplicateForks) // 1000 == len(duplicateForks) / 1000:
+        print(len(duplicateForks))
     while True:
         noChangesCounter = 0
         numberLogic(sudokuMap, solveMap)
@@ -165,6 +191,8 @@ def sudokuSolver(sudokuMap, solveMap, options):
         if noChangesCounter == 162:
             # print("Map incomplete")
             if options == False:
+                sudokuPrint(sudokuMap)
+                print(solveMap)
                 break
             else:
                 forkLevel = 2
@@ -177,16 +205,28 @@ def sudokuSolver(sudokuMap, solveMap, options):
                                         continue
                                     testSudokuMap = np.copy(sudokuMap)
                                     testSudokuMap[Y, X] = testNumbers
-                                    testSolveMap = np.copy(solveMap)
-                                    testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
-                                    sudokuSolver(testSudokuMap, testSolveMap, True)
+                                    duplicate = False
+                                    for maps in duplicateForks:
+                                        if (maps == testSudokuMap).all() == True:
+                                            print(maps == testSudokuMap)
+                                            duplicate = True
+                                            break
+                                    if duplicate == False:
+                                        duplicateForks.append(testSudokuMap)
+                                        testSolveMap = np.copy(solveMap)
+                                        testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
+                                        sudokuSolver(testSudokuMap, testSolveMap, True)
 
 
                     forkLevel += 1
                 break
         if 0 not in sudokuMap:
-            print("Map completed")
-            sudokuPrint(sudokuMap)
+            for maps in finishedMaps:
+                if (maps == sudokuMap).all():
+                    return
+            finishedMaps.append(sudokuMap)
+            # print("Map completed")
+            # sudokuPrint(sudokuMap)
             break
 
 
