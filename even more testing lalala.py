@@ -1,4 +1,7 @@
 import numpy as np
+import random
+
+print(random.randrange(100))
 henk = np.zeros((9, 9, 9), "int8")
 # # henk[3:5, :] = 8
 # henk[2,3,4] = 8

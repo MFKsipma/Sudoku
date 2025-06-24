@@ -1,4 +1,5 @@
 import numpy as np
+import random
 #import cProfile
 #import timeit
 
@@ -59,6 +60,8 @@ testPuzzle2 = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
 
 # convert oude map naar nieuwe map
 testPuzzle = testPuzzle00
+
+emptyMap = testPuzzle1
 
 finishedMaps = []
 duplicateForks = []
@@ -176,7 +179,7 @@ def mapFiller(sudokuMap, solveMap):
     return noChangesCounter
 
 
-numberLogicInit(sudokuMap, solveMap)
+
 
 def sudokuSolver(sudokuMap, solveMap, options):
     if len(duplicateForks) // 1000 == len(duplicateForks) / 1000:
@@ -188,13 +191,24 @@ def sudokuSolver(sudokuMap, solveMap, options):
         noChangesCounter += numberLogic2(sudokuMap, solveMap)
         # sudokuPrint(sudokuMap)
         # print(noChangesCounter)
+        if 0 not in sudokuMap:
+            for maps in finishedMaps:
+                if (maps == sudokuMap).all():
+                    return
+            finishedMaps.append(sudokuMap)
+            print("Map completed")
+            sudokuPrint(sudokuMap)
+            if options == "generate":
+                return sudokuPrint(generatedMap)
+            break
+
         if noChangesCounter == 162:
             # print("Map incomplete")
             if options == False:
                 sudokuPrint(sudokuMap)
                 print(solveMap)
                 break
-            else:
+            elif options == True:
                 forkLevel = 2
                 while forkLevel < 10:
                     for Y in range(9):
@@ -216,23 +230,36 @@ def sudokuSolver(sudokuMap, solveMap, options):
                                         testSolveMap = np.copy(solveMap)
                                         testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
                                         sudokuSolver(testSudokuMap, testSolveMap, True)
-
-
                     forkLevel += 1
                 break
-        if 0 not in sudokuMap:
-            for maps in finishedMaps:
-                if (maps == sudokuMap).all():
-                    return
-            finishedMaps.append(sudokuMap)
-            # print("Map completed")
-            # sudokuPrint(sudokuMap)
-            break
+            elif options == "generate":
+                newNumberPlaced = False
+                while not newNumberPlaced:
+                    Y = random.randrange(9)
+                    X = random.randrange(9)
+                    if sudokuMap[Y, X] == 0:
+                        while not newNumberPlaced:
+                            newNumber = random.randrange(9)
+                            # print(solveMap[Y, X])
+                            # print(solveMap[Y, X, newNumber])
+                            if solveMap[Y, X, newNumber] != 0:
+                                sudokuMap[Y, X] = solveMap[Y, X, newNumber]
+                                generatedMap[Y, X] = solveMap[Y, X, newNumber]
+                                numberLogic(sudokuMap, solveMap)
+                                testNumberLogic(solveMap, Y, X, newNumber)
+                                newNumberPlaced = True
+
 
 
 def display():
     return puzzleConvert(testPuzzle)
 
 # cProfile
+# numberLogicInit(sudokuMap, solveMap)
+# sudokuSolver(sudokuMap, solveMap, True)
 
-sudokuSolver(sudokuMap, solveMap, True)
+generatedMap = puzzleConvert(emptyMap)
+
+emptyMap = puzzleConvert(emptyMap)
+
+sudokuSolver(emptyMap, solveMap, "generate")
