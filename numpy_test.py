@@ -57,9 +57,19 @@ testPuzzle2 = [['.', '8', '.', '.', '3', '.', '4', '.', '.'],
               ['5', '.', '.', '1', '6', '.', '.', '.', '.'],
               ['.', '1', '6', '3', '4', '.', '.', '2', '.']]
 
+testPuzzle3 = [['.', '1', '2', '3', '4', '5', '6', '7', '.'],
+              ['.', '.', '8', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+
 
 # convert oude map naar nieuwe map
-testPuzzle = testPuzzle00
+testPuzzle = testPuzzle3
 
 emptyMap = testPuzzle1
 
@@ -115,8 +125,16 @@ for Y in range(3):
     for X in range(3):
         cube.append([Y * 3, X * 3])
 
+def cubeGen(sudokuMap):
+    cubeMap = []
+    for Y in range(3):
+        for X in range(3):
+            cubeMap.append(sudokuMap[Y * 3: Y * 3 + 3, X * 3: X * 3 + 3])
+    return cubeMap
+
 #check over een hele lijn heen en haal alles uit die lijn
-def numberLogic(sudokuMap, solveMap):
+# def numberLogic(sudokuMap, solveMap)
+def numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve):
     for Y in range(9):
         #if not np.any(solveMap[Y]):
         #    print("hoi")
@@ -126,8 +144,10 @@ def numberLogic(sudokuMap, solveMap):
                 solveMap[Y, :, testNumber] = 0
             if testNumber + 1 in sudokuMap[:, Y]:
                 solveMap[:, Y, testNumber] = 0
-            if testNumber + 1 in sudokuMap[cube[Y][0]:cube[Y][0] + 3, cube[Y][1]:cube[Y][1] + 3]:
-                solveMap[cube[Y][0]:cube[Y][0] + 3, cube[Y][1]:cube[Y][1] + 3, testNumber] = 0
+            if testNumber + 1 in cubeMap[Y]:
+                cubeSolve[Y][:, :, testNumber] = 0
+            # if testNumber + 1 in sudokuMap[cube[Y][0]:cube[Y][0] + 3, cube[Y][1]:cube[Y][1] + 3]:
+            #     solveMap[cube[Y][0]:cube[Y][0] + 3, cube[Y][1]:cube[Y][1] + 3, testNumber] = 0
 
 def testNumberLogic(solveMap, Y, X, number):
     solveMap[Y, X] = 0
@@ -182,11 +202,13 @@ def mapFiller(sudokuMap, solveMap):
 
 
 def sudokuSolver(sudokuMap, solveMap, options):
+    cubeMap = cubeGen(sudokuMap)
+    cubeSolve = cubeGen(solveMap)
     if len(duplicateForks) // 1000 == len(duplicateForks) / 1000:
         print(len(duplicateForks))
     while True:
         noChangesCounter = 0
-        numberLogic(sudokuMap, solveMap)
+        numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
         noChangesCounter += mapFiller(sudokuMap, solveMap)
         noChangesCounter += numberLogic2(sudokuMap, solveMap)
         # sudokuPrint(sudokuMap)
@@ -238,18 +260,23 @@ def sudokuSolver(sudokuMap, solveMap, options):
                     Y = random.randrange(9)
                     X = random.randrange(9)
                     if sudokuMap[Y, X] == 0:
+                        ohNoTheLoops = 0
                         while not newNumberPlaced:
                             newNumber = random.randrange(9)
-                            # print(solveMap[Y, X])
-                            # print(solveMap[Y, X, newNumber])
                             if solveMap[Y, X, newNumber] != 0:
                                 sudokuMap[Y, X] = solveMap[Y, X, newNumber]
                                 generatedMap[Y, X] = solveMap[Y, X, newNumber]
-                                numberLogic(sudokuMap, solveMap)
-                                testNumberLogic(solveMap, Y, X, newNumber)
+                                numberLogic(sudokuMap, solveMap, cubeMap,cubeSolve)
+                                # testNumberLogic(solveMap, Y, X, newNumber)
                                 newNumberPlaced = True
-
-
+                            ohNoTheLoops += 1
+                            if ohNoTheLoops == 50:
+                                print("stuck in a loop")
+                                print(solveMap)
+                                sudokuPrint(sudokuMap)
+                                print(Y)
+                                print(X)
+                                print(cubeMap[0])
 
 def display():
     return puzzleConvert(testPuzzle)
@@ -262,4 +289,13 @@ generatedMap = puzzleConvert(emptyMap)
 
 emptyMap = puzzleConvert(emptyMap)
 
-sudokuSolver(emptyMap, solveMap, "generate")
+# sudokuSolver(emptyMap, solveMap, "generate")
+
+
+# ff wat testen
+sudokuMap = puzzleConvert(testPuzzle)
+cubeMap = cubeGen(sudokuMap)
+cubeSolve = cubeGen(solveMap)
+numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
+mapFiller(sudokuMap, solveMap)
+sudokuPrint(sudokuMap)
