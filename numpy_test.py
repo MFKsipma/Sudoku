@@ -192,11 +192,11 @@ def numberLogic2(sudokuMap, solveMap):
 
     return noChangesCounter
 
-
+# werkt alleen nog voor regel 1-3
 def numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve):
     for rowOrColumn in range(3):
         for number in range(9):
-            for cube in range(3):
+            for cubeNumber in range(3):
 
                 # horizontal
                 # checks if row is already solved
@@ -207,12 +207,12 @@ def numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve):
                         continue
 
                     # checks if the tested number only fits in cubeSolve[(cube + 2) %3] cube's row
-                    # if (number + 1 not in cubeSolve[(cube + 0) % 3][rowOrColumn] and
-                    if (number + 1 not in cubeSolve[cube][rowOrColumn] and
-                            number + 1 not in cubeSolve[(cube + 1) % 3][rowOrColumn]):
+                    # if (number + 1 not in cubeSolve[(cubeNumber + 0) % 3][rowOrColumn] and
+                    if (number + 1 not in cubeSolve[cubeNumber][rowOrColumn] and
+                            number + 1 not in cubeSolve[(cubeNumber + 1) % 3][rowOrColumn]):
 
-                        cubeSolve[(cube + 2) %3][(rowOrColumn + 1) % 3, :, number] = 0
-                        cubeSolve[(cube + 2) %3][(rowOrColumn + 2) % 3, :, number] = 0
+                        cubeSolve[(cubeNumber + 2) %3][(rowOrColumn + 1) % 3, :, number] = 0
+                        cubeSolve[(cubeNumber + 2) %3][(rowOrColumn + 2) % 3, :, number] = 0
 
 
 # kijkt of er nog 1 mogelijkheid over is op een plaats (moet na numberLogic)
@@ -346,4 +346,4 @@ print(solveMap)
 sudokuPrint(sudokuMap)
 
 
-je moet nog alle cube dingen aan passen
+# cube nog aan passen

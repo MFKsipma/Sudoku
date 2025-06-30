@@ -18,3 +18,7 @@ melk = np.zeros((9, 9, 9), "int8")
 # # print(henk)
 # print(kaas)
 print((henk == melk).all())
+
+kaas = np.zeros((9, 9, 9), "int8")
+kaas[4, 5, 3] = 2
+print(np.nonzero(kaas))
