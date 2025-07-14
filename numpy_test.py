@@ -367,6 +367,25 @@ def sudokuSolver(sudokuMap, solveMap, options):
                                         sudokuSolver(testSudokuMap, testSolveMap, True)
                     forkLevel += 1
                 break
+            # logica 3 nodig
+            elif options == "menyTest":
+                for Y in range(9):
+                    for X in range(9):
+                        if np.count_nonzero(solveMap[Y, X]) > 1:
+                            for testNumbers in solveMap[Y, X]:
+                                if testNumbers == 0:
+                                    continue
+                                testSudokuMap = np.copy(sudokuMap)
+                                testSudokuMap[Y, X] = testNumbers
+                                testSolveMap = np.copy(solveMap)
+                                testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
+                                print(solveMap)
+                                # print("--------------------------")
+                                # print((testSolveMap))
+                                sudokuPrint(sudokuMap)
+                                sudokuSolver(testSudokuMap, testSolveMap, "menyTest")
+                            return
+
             elif options == "generate":
                 newNumberPlaced = False
                 while not newNumberPlaced:
@@ -405,9 +424,9 @@ emptyMap = puzzleConvert(emptyMap)
 
 # sudokuSolver(emptyMap, solveMap, "generate")
 
-sudokuMap = puzzleConvert(testPuzzle00)
+sudokuMap = puzzleConvert(testPuzzle1)
 numberLogicInit(sudokuMap, solveMap)
-sudokuSolver(sudokuMap, solveMap, True)
+sudokuSolver(sudokuMap, solveMap, "menyTest")
 
 
 # ff wat testen
