@@ -481,3 +481,5 @@ sudokuPrint(sudokuMap)
 # sudokuPrint(sudokuMap)
 
 #mapFiller niet nodig !?
+
+je bent met test logic 3 bezig
