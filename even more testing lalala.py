@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-print(random.randrange(100))
+# print(random.randrange(100))
 henk = np.zeros((9, 9, 9), "int8")
 # # henk[3:5, :] = 8
 # henk[2,3,4] = 8
@@ -17,8 +17,13 @@ melk = np.zeros((9, 9, 9), "int8")
 # henk[:] = 8
 # # print(henk)
 # print(kaas)
-print((henk == melk).all())
+# print((henk == melk).all())
 
 kaas = np.zeros((9, 9, 9), "int8")
 kaas[4, 5, 3] = 2
-print(np.nonzero(kaas))
+# print(np.nonzero(kaas))
+
+cubeNumber = 8
+print((cubeNumber // 3) * 3 + ((cubeNumber + 0) % 3))
+print((cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3))
+print((cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3))

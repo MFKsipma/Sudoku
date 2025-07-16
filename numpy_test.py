@@ -138,6 +138,16 @@ testPuzzle10 = [['1', '2', '3', '4', '5', '6', '7', '8', '9'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
 
+testPuzzle11 = [['.', '.', '.', '.', '.', '.', '1', '.', '.'],
+              ['1', '3', '7', '.', '.', '.', '2', '8', '9'],
+              ['.', '.', '.', '.', '.', '.', '3', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '7', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '8', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '9', '.', '.']]
+
 # convert oude map naar nieuwe map
 # testPuzzle = testPuzzle00
 
@@ -260,52 +270,47 @@ def numberLogic2(sudokuMap, solveMap, cubeMap, cubeSolve):
 
     return noChangesCounter
 
-# werkt alleen nog voor regel 1-3
+
+#excludes numbers from the same cube in other rows/columns if they only fit in the cube's tested row/column
 def numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve):
-    #columns and rows consisting of 3 rows
-    for rowOrColumn in range(3):
-        # rowOrColumn += threeRowOrColumn
-        for number in range(9):
-            for cubeNumber in range(3):
+    for cubeNumber in range(9):
+        # columns and rows consisting of 3 rows
+        for rowOrColumn in range(3):
+            # rowOrColumn += threeRowOrColumn
+            for number in range(9):
+
 
                 # horizontal
                 # checks if row is already solved
-                if len(np.nonzero(solveMap[rowOrColumn])) > 0:
+                if len(np.nonzero(solveMap[(cubeNumber // 3) * 3 + rowOrColumn])) > 0:
 
                     # checks if the tested number is already in the row
-                    if number + 1 in sudokuMap[rowOrColumn]:
+                    if number + 1 in sudokuMap[(cubeNumber // 3) * 3 + rowOrColumn]:
                         continue
 
-                    # checks if the tested number only fits in cubeSolve[(cube + 2) %3] cube's row and not in the other rows of that cube
-                    # if (number + 1 not in cubeSolve[(cubeNumber + 0) % 3][rowOrColumn] and
-                    #         number + 1 not in cubeSolve[(cubeNumber + 1) % 3][rowOrColumn]):
-                    #     cubeSolve[(cubeNumber + 2) %3][(rowOrColumn + 1) % 3, :, number] = 0
-                    #     cubeSolve[(cubeNumber + 2) %3][(rowOrColumn + 2) % 3, :, number] = 0
-
-                    # test of het ook voor kubes boven de 4 kan
-                    if (number + 1 not in cubeSolve[(cubeNumber + 0) % 3][rowOrColumn] and
-                            number + 1 not in cubeSolve[(cubeNumber + 1) % 3][rowOrColumn]):
-                        cubeSolve[(cubeNumber + 2) %3][(rowOrColumn + 1) % 3, :, number] = 0
-                        cubeSolve[(cubeNumber + 2) %3][(rowOrColumn + 2) % 3, :, number] = 0
+                    # checks if the tested number only fits in cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)] cube's row and not in the other rows of that cube
+                    if (number + 1 not in cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 0) % 3)][rowOrColumn] and
+                            number + 1 not in cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3)][rowOrColumn]):
+                        cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][(rowOrColumn + 1) % 3, :, number] = 0
+                        cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][(rowOrColumn + 2) % 3, :, number] = 0
 
 
                 # vertical
                 # checks if row is already solved
-                if len(np.nonzero(solveMap[:, rowOrColumn])) > 0:
+                if len(np.nonzero(solveMap[:, (cubeNumber % 3) * 3 + rowOrColumn])) > 0:
 
                     # checks if the tested number is already in the row
-                    if number + 1 in sudokuMap[:, rowOrColumn]:
+                    if number + 1 in sudokuMap[:, (cubeNumber % 3) * 3 + rowOrColumn]:
                         continue
 
-                    # dit werkt als cubeNumber 9 is in plaats van 3
-                    # checks if the tested number only fits in cubeSolve[(cube + 2) %3] cube's column and not in the other columns of that cube
+                    # checks if the tested number only fits in cubeSolve[(cubeNumber + 6) % 9] cube's column and not in the other columns of that cube
                     if (number + 1 not in cubeSolve[(cubeNumber + 0) % 9][:, rowOrColumn] and
                             number + 1 not in cubeSolve[(cubeNumber + 3) % 9][:, rowOrColumn]):
                         cubeSolve[(cubeNumber + 6) % 9][:, (rowOrColumn + 1) % 3, number] = 0
                         cubeSolve[(cubeNumber + 6) % 9][:, (rowOrColumn + 2) % 3, number] = 0
 
 
-# stops the option for numbers in a cube, if thus thos numbers have to be placed in a different cube
+# stops the option for numbers in a cube, if thus those numbers have to be placed in a different cube
 def numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve):
     None
 
@@ -453,7 +458,7 @@ emptyMap = puzzleConvert(emptyMap)
 # sudokuPrint(sudokuMap)
 
 #nog een test numberlogic3
-sudokuMap = puzzleConvert(testPuzzle8)
+sudokuMap = puzzleConvert(testPuzzle11)
 cubeMap = cubeGen(sudokuMap)
 cubeSolve = cubeGen(solveMap)
 numberLogicInit(sudokuMap, solveMap)
@@ -481,5 +486,3 @@ sudokuPrint(sudokuMap)
 # sudokuPrint(sudokuMap)
 
 #mapFiller niet nodig !?
-
-je bent met test logic 3 bezig
