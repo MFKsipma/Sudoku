@@ -23,7 +23,11 @@ kaas = np.zeros((9, 9, 9), "int8")
 kaas[4, 5, 3] = 2
 # print(np.nonzero(kaas))
 
-cubeNumber = 8
-print((cubeNumber // 3) * 3 + ((cubeNumber + 0) % 3))
-print((cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3))
-print((cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3))
+# cubeNumber = 8
+# print((cubeNumber // 3) * 3 + ((cubeNumber + 0) % 3))
+# print((cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3))
+# print((cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3))
+
+print(np.count_nonzero(kaas))
+
+print(len(np.unique(kaas)))
