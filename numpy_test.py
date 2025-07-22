@@ -361,13 +361,14 @@ def sudokuChecker(sudokuMap, cubeMap):
     for rowOrColumnOrCube in range(9):
         if len(np.unique(sudokuMap[rowOrColumnOrCube])) != 9:
             print(f"invalid sudoku. row {rowOrColumnOrCube}")
-            break
+            return
         if len(np.unique(sudokuMap[:, rowOrColumnOrCube])) != 9:
             print(f"invalid sudoku. column {rowOrColumnOrCube}")
-            break
+            return
         if len(np.unique(cubeMap[rowOrColumnOrCube])) != 9:
             print(f"invalid sudoku. cube {rowOrColumnOrCube}")
-            break
+            return
+    print("valid map")
 
 
 
@@ -376,8 +377,8 @@ def sudokuChecker(sudokuMap, cubeMap):
 def sudokuSolver(sudokuMap, solveMap, options):
     cubeMap = cubeGen(sudokuMap)
     cubeSolve = cubeGen(solveMap)
-    # if len(duplicateForks) // 1000 == len(duplicateForks) / 1000:
-    #     print(len(duplicateForks))
+    if len(duplicateForks) // 10 == len(duplicateForks) / 10:
+        print(len(duplicateForks))
     while True:
         noChangesCounter = 0
         numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
@@ -388,12 +389,14 @@ def sudokuSolver(sudokuMap, solveMap, options):
         # sudokuPrint(sudokuMap)
         # print(noChangesCounter)
         if 0 not in sudokuMap:
-            for maps in finishedMaps:
-                if (maps == sudokuMap).all():
-                    return
+            if options != "menyTest":
+                for maps in finishedMaps:
+                    if (maps == sudokuMap).all():
+                        return
             finishedMaps.append(sudokuMap)
             # print("Map completed")
             sudokuPrint(sudokuMap)
+            sudokuChecker(sudokuMap, cubeMap)
             if options == "generate":
                 return sudokuPrint(generatedMap)
             break
@@ -441,9 +444,13 @@ def sudokuSolver(sudokuMap, solveMap, options):
                                 testSudokuMap[Y, X] = testNumbers
                                 testSolveMap = np.copy(solveMap)
                                 testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
+
+                                # dit kan weer weg V
+                                duplicateForks.append(testSudokuMap)
+
                                 print(solveMap)
-                                # print("--------------------------")
-                                # print((testSolveMap))
+                                print("--------------------------")
+                                print((testSolveMap))
                                 sudokuPrint(sudokuMap)
                                 sudokuSolver(testSudokuMap, testSolveMap, "menyTest")
                             return
@@ -486,9 +493,9 @@ emptyMap = puzzleConvert(emptyMap)
 
 # sudokuSolver(emptyMap, solveMap, "generate")
 
-# sudokuMap = puzzleConvert(testPuzzle1)
-# numberLogicInit(sudokuMap, solveMap)
-# sudokuSolver(sudokuMap, solveMap, "menyTest")
+sudokuMap = puzzleConvert(testPuzzle1)
+numberLogicInit(sudokuMap, solveMap)
+sudokuSolver(sudokuMap, solveMap, "menyTest")
 
 
 # ff wat testen
@@ -529,17 +536,17 @@ emptyMap = puzzleConvert(emptyMap)
 
 
 #nog een test numberlogic4
-sudokuMap = puzzleConvert(testPuzzle10)
-cubeMap = cubeGen(sudokuMap)
-cubeSolve = cubeGen(solveMap)
-numberLogicInit(sudokuMap, solveMap)
-numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
-mapFiller(sudokuMap, solveMap)
-print(solveMap[1:3])
-numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
-print("--------------------------")
-print(solveMap[1:3])
-sudokuPrint(sudokuMap)
+# sudokuMap = puzzleConvert(testPuzzle10)
+# cubeMap = cubeGen(sudokuMap)
+# cubeSolve = cubeGen(solveMap)
+# numberLogicInit(sudokuMap, solveMap)
+# numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
+# mapFiller(sudokuMap, solveMap)
+# print(solveMap[1:3])
+# numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
+# print("--------------------------")
+# print(solveMap[1:3])
+# sudokuPrint(sudokuMap)
 
 
 
