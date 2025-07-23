@@ -148,6 +148,36 @@ testPuzzle11 = [['.', '.', '.', '.', '.', '.', '1', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '8', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '9', '.', '.']]
 
+testPuzzle12 = [['.', '1', '.', '4', '.', '.', '6', '.', '.'],
+              ['.', '2', '.', '6', '.', '.', '5', '.', '.'],
+              ['.', '3', '.', '5', '.', '.', '4', '.', '.'],
+              ['.', '4', '.', '2', '.', '.', '3', '.', '.'],
+              ['.', '5', '.', '1', '.', '.', '2', '.', '.'],
+              ['.', '7', '.', '3', '.', '.', '1', '.', '.'],
+              ['7', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+
+testPuzzle13 = [['.', '1', '4', '.', '2', '5', '.', '3', '6'],
+              ['.', '2', '5', '.', '3', '6', '.', '1', '4'],
+              ['.', '3', '6', '.', '1', '4', '.', '2', '5'],
+              ['.', '4', '1', '.', '5', '2', '.', '6', '3'],
+              ['.', '5', '2', '.', '6', '3', '.', '4', '1'],
+              ['.', '6', '3', '.', '4', '1', '.', '5', '2'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+
+testPuzzle14 = [['.', '1', '.', '2', '.', '.', '3', '.', '.'],
+              ['.', '2', '.', '3', '.', '.', '1', '.', '.'],
+              ['.', '3', '.', '1', '.', '.', '2', '.', '.'],
+              ['.', '.', '1', '.', '2', '.', '.', '3', '.'],
+              ['.', '.', '2', '.', '3', '.', '.', '1', '.'],
+              ['.', '.', '3', '.', '1', '.', '.', '2', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+
 # convert oude map naar nieuwe map
 # testPuzzle = testPuzzle00
 
@@ -155,6 +185,7 @@ emptyMap = testPuzzle1
 
 finishedMaps = []
 duplicateForks = []
+completedSudokus = [0]
 
 def puzzleConvert(testPuzzle):
     convertedMap = np.zeros((9, 9), "int8")
@@ -337,6 +368,12 @@ def numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve):
                         cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][rowOrColumn, :, number] = 0
 
 
+def numberLogic5(sudokuMap, solveMap, cubeMap, cubeSolve):
+    for rows in range(9):
+        return
+
+
+
 # kijkt of er nog 1 mogelijkheid over is op een plaats (moet na numberLogic)
 def mapFiller(sudokuMap, solveMap):
     noChangesCounter = 81
@@ -369,6 +406,7 @@ def sudokuChecker(sudokuMap, cubeMap):
             print(f"invalid sudoku. cube {rowOrColumnOrCube}")
             return
     print("valid map")
+    return
 
 
 
@@ -377,8 +415,8 @@ def sudokuChecker(sudokuMap, cubeMap):
 def sudokuSolver(sudokuMap, solveMap, options):
     cubeMap = cubeGen(sudokuMap)
     cubeSolve = cubeGen(solveMap)
-    if len(duplicateForks) // 10 == len(duplicateForks) / 10:
-        print(len(duplicateForks))
+    # if len(duplicateForks) // 100 == len(duplicateForks) / 100:
+    #     print(len(duplicateForks))
     while True:
         noChangesCounter = 0
         numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
@@ -389,6 +427,9 @@ def sudokuSolver(sudokuMap, solveMap, options):
         # sudokuPrint(sudokuMap)
         # print(noChangesCounter)
         if 0 not in sudokuMap:
+            completedSudokus[0] += 1
+            if completedSudokus[0] // 100 == completedSudokus[0] / 100:
+                print(completedSudokus[0])
             if options != "menyTest":
                 for maps in finishedMaps:
                     if (maps == sudokuMap).all():
@@ -487,15 +528,16 @@ def display():
 # cProfile
 
 
+
 generatedMap = puzzleConvert(emptyMap)
 #
 emptyMap = puzzleConvert(emptyMap)
 
 # sudokuSolver(emptyMap, solveMap, "generate")
 
-sudokuMap = puzzleConvert(testPuzzle1)
-numberLogicInit(sudokuMap, solveMap)
-sudokuSolver(sudokuMap, solveMap, "menyTest")
+# sudokuMap = puzzleConvert(testPuzzle1)
+# numberLogicInit(sudokuMap, solveMap)
+# sudokuSolver(sudokuMap, solveMap, "menyTest")
 
 
 # ff wat testen
@@ -507,15 +549,15 @@ sudokuSolver(sudokuMap, solveMap, "menyTest")
 # sudokuPrint(sudokuMap)
 
 #nog een test numberlogic3
-# sudokuMap = puzzleConvert(testPuzzle11)
-# cubeMap = cubeGen(sudokuMap)
-# cubeSolve = cubeGen(solveMap)
-# numberLogicInit(sudokuMap, solveMap)
-# numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
-# mapFiller(sudokuMap, solveMap)
-# numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve)
-# print(solveMap)
-# sudokuPrint(sudokuMap)
+sudokuMap = puzzleConvert(testPuzzle11)
+cubeMap = cubeGen(sudokuMap)
+cubeSolve = cubeGen(solveMap)
+numberLogicInit(sudokuMap, solveMap)
+numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
+mapFiller(sudokuMap, solveMap)
+numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve)
+print(solveMap)
+sudokuPrint(sudokuMap)
 
 
 # cube nog aan passen
@@ -546,6 +588,21 @@ sudokuSolver(sudokuMap, solveMap, "menyTest")
 # numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
 # print("--------------------------")
 # print(solveMap[1:3])
+# sudokuPrint(sudokuMap)
+
+
+
+#nog een test numberlogic5
+# sudokuMap = puzzleConvert(testPuzzle14)
+# cubeMap = cubeGen(sudokuMap)
+# cubeSolve = cubeGen(solveMap)
+# numberLogicInit(sudokuMap, solveMap)
+# numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
+# mapFiller(sudokuMap, solveMap)
+# print(solveMap[6])
+# numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
+# print("--------------------------")
+# print(solveMap[6])
 # sudokuPrint(sudokuMap)
 
 
