@@ -21,6 +21,7 @@ melk = np.zeros((9, 9, 9), "int8")
 
 kaas = np.zeros((9, 9, 9), "int8")
 kaas[4, 5, 3] = 2
+kaas[2, 3, 1] = 2
 # print(np.nonzero(kaas))
 
 # cubeNumber = 8
@@ -31,3 +32,6 @@ kaas[4, 5, 3] = 2
 print(np.count_nonzero(kaas))
 
 print(len(np.unique(kaas)))
+
+print(np.count_nonzero(kaas))
+print(np.unique(kaas))

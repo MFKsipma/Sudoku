@@ -178,6 +178,16 @@ testPuzzle14 = [['.', '1', '.', '2', '.', '.', '3', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
 
+testPuzzle15 = [['.', '.', '4', '4', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+
 # convert oude map naar nieuwe map
 # testPuzzle = testPuzzle00
 
@@ -341,7 +351,7 @@ def numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve):
                         cubeSolve[(cubeNumber + 6) % 9][:, (rowOrColumn + 2) % 3, number] = 0
 
 
-# stops the option for numbers in a cube, if thus those numbers have to be placed in a different cube
+# stops the option for numbers in a cube, if those numbers have to be placed in a different cube
 def numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve):
     # for cubeNumber in range(9):
     #     # columns and rows consisting of 3 rows
@@ -407,6 +417,18 @@ def sudokuChecker(sudokuMap, cubeMap):
             return
     print("valid map")
     return
+
+
+
+def sudokuChecker2(sudokuMap, cubeMap):
+    for rowOrColumnOrCube in range(9):
+        if np.count_nonzero(sudokuMap[rowOrColumnOrCube]) >= len(np.unique(sudokuMap[rowOrColumnOrCube])):
+            if len(np.unique(sudokuMap[rowOrColumnOrCube])) != 9:
+                print("henk")
+                print(solveMap)
+                sudokuPrint(sudokuMap)
+
+
 
 
 
@@ -487,12 +509,13 @@ def sudokuSolver(sudokuMap, solveMap, options):
                                 testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
 
                                 # dit kan weer weg V
-                                duplicateForks.append(testSudokuMap)
-
-                                print(solveMap)
-                                print("--------------------------")
-                                print((testSolveMap))
-                                sudokuPrint(sudokuMap)
+                                # duplicateForks.append(testSudokuMap)
+                                #
+                                # print(solveMap)
+                                # print("--------------------------")
+                                # print((testSolveMap))
+                                # sudokuPrint(sudokuMap)
+                                #sudokuChecker2(sudokuMap, cubeMap)
                                 sudokuSolver(testSudokuMap, testSolveMap, "menyTest")
                             return
 
@@ -549,15 +572,15 @@ emptyMap = puzzleConvert(emptyMap)
 # sudokuPrint(sudokuMap)
 
 #nog een test numberlogic3
-sudokuMap = puzzleConvert(testPuzzle11)
-cubeMap = cubeGen(sudokuMap)
-cubeSolve = cubeGen(solveMap)
-numberLogicInit(sudokuMap, solveMap)
-numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
-mapFiller(sudokuMap, solveMap)
-numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve)
-print(solveMap)
-sudokuPrint(sudokuMap)
+# sudokuMap = puzzleConvert(testPuzzle11)
+# cubeMap = cubeGen(sudokuMap)
+# cubeSolve = cubeGen(solveMap)
+# numberLogicInit(sudokuMap, solveMap)
+# numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
+# mapFiller(sudokuMap, solveMap)
+# numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve)
+# print(solveMap)
+# sudokuPrint(sudokuMap)
 
 
 # cube nog aan passen
@@ -618,6 +641,18 @@ sudokuPrint(sudokuMap)
 # # print(solveMap[0:3])
 # sudokuChecker(sudokuMap, cubeMap)
 # sudokuPrint(sudokuMap)
+
+#nog een test sudokuChecker2
+sudokuMap = puzzleConvert(testPuzzle15)
+cubeMap = cubeGen(sudokuMap)
+cubeSolve = cubeGen(solveMap)
+numberLogicInit(sudokuMap, solveMap)
+numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
+mapFiller(sudokuMap, solveMap)
+# numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
+# print(solveMap[0:3])
+sudokuChecker2(sudokuMap, cubeMap)
+sudokuPrint(sudokuMap)
 
 
 
