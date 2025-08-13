@@ -7,6 +7,16 @@ import time
 from datetime import timedelta
 start_time = time.monotonic()
 
+testPuzzleHard = [['.', '1', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '3', '.', '.', '4', '.', '6'],
+              ['.', '4', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '.', '8', '.', '2', '.', '4', '7'],
+              ['8', '.', '.', '.', '.', '.', '5', '.', '.'],
+              ['.', '.', '7', '.', '1', '6', '2', '.', '.'],
+              ['6', '3', '2', '.', '.', '7', '.', '1', '.'],
+              ['.', '.', '.', '.', '.', '.', '.', '5', '.'],
+              ['.', '5', '9', '.', '.', '3', '7', '.', '.']]
+
 testPuzzle0 = [['.', '.', '.', '.', '9', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
@@ -129,7 +139,7 @@ testPuzzle9 = [['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
 
 testPuzzle10 = [['1', '2', '3', '4', '5', '6', '7', '8', '9'],
-              ['4', '5', '6', '.', '.', '.', '.', '.', '.'],
+              ['4', '5', '6', '.', '.', '.', '.', '.', '3'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
@@ -178,15 +188,25 @@ testPuzzle14 = [['.', '1', '.', '2', '.', '.', '3', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
 
-testPuzzle15 = [['.', '.', '4', '4', '.', '.', '.', '.', '.'],
+testPuzzle15 = [['.', '.', '4', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '4', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+
+testPuzzle16 = [['1', '4', '.', '.', '.', '.', '.', '.', '.'],
+              ['2', '5', '.', '.', '.', '.', '.', '.', '.'],
+              ['3', '6', '.', '.', '.', '.', '.', '.', '.'],
+              ['4', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['5', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['6', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['7', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['8', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['9', '3', '.', '.', '.', '.', '.', '.', '.']]
 
 # convert oude map naar nieuwe map
 # testPuzzle = testPuzzle00
@@ -365,6 +385,7 @@ def numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve):
     #                     print("het gebeurt")
     #                     cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3)][rowOrColumn, :, number] = 0
     #                     cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][rowOrColumn, :, number] = 0
+    # horizontal
     for cubeNumber in range(9):
         # columns and rows consisting of 3 rows
         for rowOrColumn in range(3):
@@ -376,6 +397,44 @@ def numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve):
                     if cubeSolve[cubeNumber][rowOrColumn, 0, number] != 0:
                         cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3)][rowOrColumn, :, number] = 0
                         cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][rowOrColumn, :, number] = 0
+            # tests if there are only 2 possible numbers in a cube row
+            if (np.count_nonzero(cubeMap[cubeNumber][rowOrColumn]) == 1 and
+                    len(np.unique(cubeSolve[cubeNumber][rowOrColumn])) == 3):
+                # looks for the empty spots in that row
+                for spotInRow in range(3):
+                    if cubeMap[cubeNumber][rowOrColumn, spotInRow] == 0:
+                    # if cubeSolve[cubeNumber][rowOrColumn, spotInRow].all() == 0:
+                        # removes possible number from other cubes of the same row
+                        for number in range(9):
+                            if cubeSolve[cubeNumber][rowOrColumn, spotInRow, number] != 0:
+                                cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3)][rowOrColumn, :, number] = 0
+                                cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][rowOrColumn, :, number] = 0
+                        break
+    # vertical
+    for cubeNumber in range(9):
+        # columns and rows consisting of 3 rows
+        for rowOrColumn in range(3):
+            # tests if there are only 3 possible numbers in a cube row
+            if (np.count_nonzero(cubeMap[cubeNumber][:, rowOrColumn]) == 0 and
+                    len(np.unique(cubeSolve[cubeNumber][:, rowOrColumn])) == 4):
+                # removes possible number from other cubes of the same row
+                for number in range(9):
+                    if cubeSolve[cubeNumber][0, rowOrColumn, number] != 0:
+                        cubeSolve[(cubeNumber + 3) % 9][:, rowOrColumn, number] = 0
+                        cubeSolve[(cubeNumber + 6) % 9][:, rowOrColumn, number] = 0
+            # tests if there are only 2 possible numbers in a cube row
+            if (np.count_nonzero(cubeMap[cubeNumber][:, rowOrColumn]) == 1 and
+                    len(np.unique(cubeSolve[cubeNumber][:, rowOrColumn])) == 3):
+                # looks for the empty spots in that row
+                for spotInRow in range(3):
+                    if cubeMap[cubeNumber][spotInRow, rowOrColumn] == 0:
+                    # if cubeSolve[cubeNumber][spotInRow, rowOrColumn].all() == 0:
+                        # removes possible number from other cubes of the same row
+                        for number in range(9):
+                            if cubeSolve[cubeNumber][spotInRow, rowOrColumn, number] != 0:
+                                cubeSolve[(cubeNumber + 3) % 9][:, rowOrColumn, number] = 0
+                                cubeSolve[(cubeNumber + 6) % 9][:, rowOrColumn, number] = 0
+                        break
 
 
 def numberLogic5(sudokuMap, solveMap, cubeMap, cubeSolve):
@@ -427,6 +486,16 @@ def sudokuChecker2(sudokuMap, cubeMap):
                 print("henk")
                 print(solveMap)
                 sudokuPrint(sudokuMap)
+        if np.count_nonzero(sudokuMap[:, rowOrColumnOrCube]) >= len(np.unique(sudokuMap[:, rowOrColumnOrCube])):
+            if len(np.unique(sudokuMap[:, rowOrColumnOrCube])) != 9:
+                print("henk")
+                print(solveMap)
+                sudokuPrint(sudokuMap)
+        if np.count_nonzero(cubeMap[rowOrColumnOrCube]) >= len(np.unique(cubeMap[rowOrColumnOrCube])):
+            if len(np.unique(cubeMap[rowOrColumnOrCube])) != 9:
+                print("henk")
+                print(solveMap)
+                sudokuPrint(sudokuMap)
 
 
 
@@ -468,6 +537,7 @@ def sudokuSolver(sudokuMap, solveMap, options):
         if noChangesCounter == 162:
             # print("Map incomplete")
             if options == False:
+                print("Map incomplete")
                 sudokuPrint(sudokuMap)
                 print(solveMap)
                 break
@@ -562,6 +632,12 @@ emptyMap = puzzleConvert(emptyMap)
 # numberLogicInit(sudokuMap, solveMap)
 # sudokuSolver(sudokuMap, solveMap, "menyTest")
 
+sudokuMap = puzzleConvert(testPuzzleHard)
+# sudokuMap = puzzleConvert(testPuzzle16)
+numberLogicInit(sudokuMap, solveMap)
+sudokuPrint(sudokuMap)
+sudokuSolver(sudokuMap, solveMap, False)
+
 
 # ff wat testen
 # sudokuMap = puzzleConvert(testPuzzle3)
@@ -602,15 +678,18 @@ emptyMap = puzzleConvert(emptyMap)
 
 #nog een test numberlogic4
 # sudokuMap = puzzleConvert(testPuzzle10)
+# sudokuMap = puzzleConvert(testPuzzle16)
 # cubeMap = cubeGen(sudokuMap)
 # cubeSolve = cubeGen(solveMap)
 # numberLogicInit(sudokuMap, solveMap)
 # numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
 # mapFiller(sudokuMap, solveMap)
-# print(solveMap[1:3])
+# # print(solveMap[1:3])
+# print(solveMap)
 # numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
 # print("--------------------------")
-# print(solveMap[1:3])
+# # print(solveMap[1:3])
+# print(solveMap)
 # sudokuPrint(sudokuMap)
 
 
@@ -643,16 +722,16 @@ emptyMap = puzzleConvert(emptyMap)
 # sudokuPrint(sudokuMap)
 
 #nog een test sudokuChecker2
-sudokuMap = puzzleConvert(testPuzzle15)
-cubeMap = cubeGen(sudokuMap)
-cubeSolve = cubeGen(solveMap)
-numberLogicInit(sudokuMap, solveMap)
-numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
-mapFiller(sudokuMap, solveMap)
-# numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
-# print(solveMap[0:3])
-sudokuChecker2(sudokuMap, cubeMap)
-sudokuPrint(sudokuMap)
+# sudokuMap = puzzleConvert(testPuzzle15)
+# cubeMap = cubeGen(sudokuMap)
+# cubeSolve = cubeGen(solveMap)
+# numberLogicInit(sudokuMap, solveMap)
+# numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
+# mapFiller(sudokuMap, solveMap)
+# # numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
+# # print(solveMap[0:3])
+# sudokuChecker2(sudokuMap, cubeMap)
+# sudokuPrint(sudokuMap)
 
 
 
