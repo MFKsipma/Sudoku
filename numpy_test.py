@@ -17,6 +17,17 @@ testPuzzleHard = [['.', '1', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '5', '.'],
               ['.', '5', '9', '.', '.', '3', '7', '.', '.']]
 
+testPuzzleHardest = [
+    ['8', '.', '.', '.', '.', '.', '.', '.', '.'],
+    ['.', '.', '3', '6', '.', '.', '.', '.', '.'],
+    ['.', '7', '.', '.', '9', '.', '2', '.', '.'],
+    ['.', '5', '.', '.', '.', '7', '.', '.', '.'],
+    ['.', '.', '.', '.', '4', '5', '7', '.', '.'],
+    ['.', '.', '.', '1', '.', '.', '.', '3', '.'],
+    ['.', '.', '1', '.', '.', '.', '.', '6', '8'],
+    ['.', '.', '8', '5', '.', '.', '.', '1', '.'],
+    ['.', '9', '.', '.', '.', '.', '4', '.', '.']]
+
 testPuzzle0 = [['.', '.', '.', '.', '9', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
@@ -190,13 +201,13 @@ testPuzzle14 = [['.', '1', '.', '2', '.', '.', '3', '.', '.'],
 
 testPuzzle15 = [['.', '.', '4', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '4', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
               ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
+              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
+              ['.', '.', '4', '.', '.', '.', '.', '.', '.']]
 
 testPuzzle16 = [['1', '4', '.', '.', '.', '.', '.', '.', '.'],
               ['2', '5', '.', '.', '.', '.', '.', '.', '.'],
@@ -466,13 +477,13 @@ def sudokuChecker(sudokuMap, cubeMap):
     #     return
     for rowOrColumnOrCube in range(9):
         if len(np.unique(sudokuMap[rowOrColumnOrCube])) != 9:
-            print(f"invalid sudoku. row {rowOrColumnOrCube}")
+            print(f"invalid sudoku. row {rowOrColumnOrCube + 1}")
             return
         if len(np.unique(sudokuMap[:, rowOrColumnOrCube])) != 9:
-            print(f"invalid sudoku. column {rowOrColumnOrCube}")
+            print(f"invalid sudoku. column {rowOrColumnOrCube + 1}")
             return
         if len(np.unique(cubeMap[rowOrColumnOrCube])) != 9:
-            print(f"invalid sudoku. cube {rowOrColumnOrCube}")
+            print(f"invalid sudoku. cube {rowOrColumnOrCube + 1}")
             return
     print("valid map")
     return
@@ -483,19 +494,23 @@ def sudokuChecker2(sudokuMap, cubeMap):
     for rowOrColumnOrCube in range(9):
         if np.count_nonzero(sudokuMap[rowOrColumnOrCube]) >= len(np.unique(sudokuMap[rowOrColumnOrCube])):
             if len(np.unique(sudokuMap[rowOrColumnOrCube])) != 9:
-                print("henk")
-                print(solveMap)
-                sudokuPrint(sudokuMap)
+                # print("henk")
+                # print(solveMap)
+                # sudokuPrint(sudokuMap)
+                return False
         if np.count_nonzero(sudokuMap[:, rowOrColumnOrCube]) >= len(np.unique(sudokuMap[:, rowOrColumnOrCube])):
             if len(np.unique(sudokuMap[:, rowOrColumnOrCube])) != 9:
-                print("henk")
-                print(solveMap)
-                sudokuPrint(sudokuMap)
+                # print("henk")
+                # print(solveMap)
+                # sudokuPrint(sudokuMap)
+                return False
         if np.count_nonzero(cubeMap[rowOrColumnOrCube]) >= len(np.unique(cubeMap[rowOrColumnOrCube])):
             if len(np.unique(cubeMap[rowOrColumnOrCube])) != 9:
-                print("henk")
-                print(solveMap)
-                sudokuPrint(sudokuMap)
+                # print("henk")
+                # print(solveMap)
+                # sudokuPrint(sudokuMap)
+                return False
+    return True
 
 
 
@@ -508,6 +523,11 @@ def sudokuSolver(sudokuMap, solveMap, options):
     cubeSolve = cubeGen(solveMap)
     # if len(duplicateForks) // 100 == len(duplicateForks) / 100:
     #     print(len(duplicateForks))
+    # removes double number on a line mistake after a wrong guess
+    mapFiller(sudokuMap, solveMap)
+    if not sudokuChecker2(sudokuMap, cubeMap):
+        print("hoi")
+        return
     while True:
         noChangesCounter = 0
         numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
@@ -517,6 +537,8 @@ def sudokuSolver(sudokuMap, solveMap, options):
         numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
         # sudokuPrint(sudokuMap)
         # print(noChangesCounter)
+
+
         if 0 not in sudokuMap:
             completedSudokus[0] += 1
             if completedSudokus[0] // 100 == completedSudokus[0] / 100:
@@ -567,6 +589,12 @@ def sudokuSolver(sudokuMap, solveMap, options):
                 break
             # logica 3 nodig
             elif options == "menyTest":
+                if not sudokuChecker2(sudokuMap, cubeMap):
+                    return
+                #tests if there are still solutions left or that the program is stuck
+                if (solveMap == 0).all():
+                    if 0 in sudokuMap:
+                        return
                 for Y in range(9):
                     for X in range(9):
                         if np.count_nonzero(solveMap[Y, X]) > 1:
@@ -577,7 +605,6 @@ def sudokuSolver(sudokuMap, solveMap, options):
                                 testSudokuMap[Y, X] = testNumbers
                                 testSolveMap = np.copy(solveMap)
                                 testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
-
                                 # dit kan weer weg V
                                 # duplicateForks.append(testSudokuMap)
                                 #
@@ -629,14 +656,19 @@ emptyMap = puzzleConvert(emptyMap)
 # sudokuSolver(emptyMap, solveMap, "generate")
 
 # sudokuMap = puzzleConvert(testPuzzle1)
-# numberLogicInit(sudokuMap, solveMap)
-# sudokuSolver(sudokuMap, solveMap, "menyTest")
-
-sudokuMap = puzzleConvert(testPuzzleHard)
-# sudokuMap = puzzleConvert(testPuzzle16)
+# sudokuMap = puzzleConvert(testPuzzleHard)
+sudokuMap = puzzleConvert(testPuzzleHardest)
 numberLogicInit(sudokuMap, solveMap)
-sudokuPrint(sudokuMap)
-sudokuSolver(sudokuMap, solveMap, False)
+sudokuSolver(sudokuMap, solveMap, "menyTest")
+stop_time = time.monotonic()
+print(start_time)
+print(stop_time)
+
+# sudokuMap = puzzleConvert(testPuzzleHard)
+# # sudokuMap = puzzleConvert(testPuzzle16)
+# numberLogicInit(sudokuMap, solveMap)
+# sudokuPrint(sudokuMap)
+# sudokuSolver(sudokuMap, solveMap, False)
 
 
 # ff wat testen
