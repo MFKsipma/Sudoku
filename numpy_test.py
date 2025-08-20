@@ -228,6 +228,7 @@ finishedMaps = []
 duplicateForks = []
 completedSudokus = [0]
 
+
 def puzzleConvert(testPuzzle):
     convertedMap = np.zeros((9, 9), "int8")
     for Y in range(9):
@@ -305,9 +306,10 @@ def testNumberLogic(solveMap, Y, X, number):
     solveMap[:, X, number] = 0
     solveMap[Y//3*3: Y//3*3 + 3, X//3*3: X//3*3 + 3, number] = 0
 
+
 # scant om te zien of 1 getal er maar 1 keer kan staan in een rij/colom/cubes
 def numberLogic2(sudokuMap, solveMap, cubeMap, cubeSolve):
-    noChangesCounter = 81
+    changesCounter = 0
     for i in range(9):
         for number in range(9):
             # horizontal
@@ -315,21 +317,14 @@ def numberLogic2(sudokuMap, solveMap, cubeMap, cubeSolve):
             if len(possibleNumbers[0]) == 1:
                 sudokuMap[i, possibleNumbers[0][0]] = solveMap[i, possibleNumbers[0][0], number]
                 testNumberLogic(solveMap, i, possibleNumbers[0][0], number)
-                noChangesCounter += -1
+                changesCounter += 1
 
             # vertical
             possibleNumbers = np.nonzero(solveMap[:, i, number])
             if len(possibleNumbers[0]) == 1:
                 sudokuMap[possibleNumbers[0][0], i] = solveMap[possibleNumbers[0][0], i, number]
                 testNumberLogic(solveMap, possibleNumbers[0][0], i, number)
-                noChangesCounter += -1
-
-            # block
-            # possibleNumbers = np.nonzero(solveMap[cube[i][0]: cube[i][0] + 3, cube[i][1]: cube[i][1] + 3, number])
-            # if len(possibleNumbers[0]) == 1:
-            #     sudokuMap[cube[i][0] + possibleNumbers[0][0], cube[i][1] + possibleNumbers[1][0]] = number + 1
-            #     testNumberLogic(solveMap, cube[i][0] + possibleNumbers[0][0], cube[i][1] + possibleNumbers[1][0], number)
-            #     noChangesCounter += -1
+                changesCounter += 1
 
             # block 2
             possibleNumbers = np.nonzero(cubeSolve[i][:, :, number])
@@ -338,13 +333,14 @@ def numberLogic2(sudokuMap, solveMap, cubeMap, cubeSolve):
                 y = possibleNumbers[0][0] + (i // 3) * 3
                 x = possibleNumbers[1][0] + (i % 3) * 3
                 testNumberLogic(solveMap, y, x, number)
-                noChangesCounter += -1
+                changesCounter += 1
 
-    return noChangesCounter
+    return changesCounter
 
 
 #excludes numbers from the same cube in other rows/columns if they only fit in the cube's tested row/column
 def numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve):
+    changesCounter = 0
     for cubeNumber in range(9):
         # columns and rows consisting of 3 rows
         for rowOrColumn in range(3):
@@ -365,6 +361,7 @@ def numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve):
                             number + 1 not in cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3)][rowOrColumn]):
                         cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][(rowOrColumn + 1) % 3, :, number] = 0
                         cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][(rowOrColumn + 2) % 3, :, number] = 0
+                        changesCounter += 1
 
 
                 # vertical
@@ -380,22 +377,13 @@ def numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve):
                             number + 1 not in cubeSolve[(cubeNumber + 3) % 9][:, rowOrColumn]):
                         cubeSolve[(cubeNumber + 6) % 9][:, (rowOrColumn + 1) % 3, number] = 0
                         cubeSolve[(cubeNumber + 6) % 9][:, (rowOrColumn + 2) % 3, number] = 0
+                        changesCounter += 1
+    return changesCounter
 
 
 # stops the option for numbers in a cube, if those numbers have to be placed in a different cube
 def numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve):
-    # for cubeNumber in range(9):
-    #     # columns and rows consisting of 3 rows
-    #     for rowOrColumn in range(3):
-    #         # tests if there are only 3 possible numbers in a cube row
-    #         if (np.count_nonzero(cubeMap[cubeNumber][rowOrColumn]) == 0 and
-    #                 np.count_nonzero(cubeSolve[cubeNumber][rowOrColumn]) == 9):
-    #             # removes possible number from other cubes of the same row
-    #             for number in range(9):
-    #                 if cubeSolve[cubeNumber][rowOrColumn, 0, number] != 0:
-    #                     print("het gebeurt")
-    #                     cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3)][rowOrColumn, :, number] = 0
-    #                     cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][rowOrColumn, :, number] = 0
+    changesCounter = 0
     # horizontal
     for cubeNumber in range(9):
         # columns and rows consisting of 3 rows
@@ -408,18 +396,19 @@ def numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve):
                     if cubeSolve[cubeNumber][rowOrColumn, 0, number] != 0:
                         cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3)][rowOrColumn, :, number] = 0
                         cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][rowOrColumn, :, number] = 0
+                        changesCounter += 1
             # tests if there are only 2 possible numbers in a cube row
             if (np.count_nonzero(cubeMap[cubeNumber][rowOrColumn]) == 1 and
                     len(np.unique(cubeSolve[cubeNumber][rowOrColumn])) == 3):
                 # looks for the empty spots in that row
                 for spotInRow in range(3):
                     if cubeMap[cubeNumber][rowOrColumn, spotInRow] == 0:
-                    # if cubeSolve[cubeNumber][rowOrColumn, spotInRow].all() == 0:
                         # removes possible number from other cubes of the same row
                         for number in range(9):
                             if cubeSolve[cubeNumber][rowOrColumn, spotInRow, number] != 0:
                                 cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3)][rowOrColumn, :, number] = 0
                                 cubeSolve[(cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3)][rowOrColumn, :, number] = 0
+                                changesCounter += 1
                         break
     # vertical
     for cubeNumber in range(9):
@@ -433,30 +422,27 @@ def numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve):
                     if cubeSolve[cubeNumber][0, rowOrColumn, number] != 0:
                         cubeSolve[(cubeNumber + 3) % 9][:, rowOrColumn, number] = 0
                         cubeSolve[(cubeNumber + 6) % 9][:, rowOrColumn, number] = 0
+                        changesCounter += 1
             # tests if there are only 2 possible numbers in a cube row
             if (np.count_nonzero(cubeMap[cubeNumber][:, rowOrColumn]) == 1 and
                     len(np.unique(cubeSolve[cubeNumber][:, rowOrColumn])) == 3):
                 # looks for the empty spots in that row
                 for spotInRow in range(3):
                     if cubeMap[cubeNumber][spotInRow, rowOrColumn] == 0:
-                    # if cubeSolve[cubeNumber][spotInRow, rowOrColumn].all() == 0:
                         # removes possible number from other cubes of the same row
                         for number in range(9):
                             if cubeSolve[cubeNumber][spotInRow, rowOrColumn, number] != 0:
                                 cubeSolve[(cubeNumber + 3) % 9][:, rowOrColumn, number] = 0
                                 cubeSolve[(cubeNumber + 6) % 9][:, rowOrColumn, number] = 0
+                                changesCounter += 1
                         break
-
-
-def numberLogic5(sudokuMap, solveMap, cubeMap, cubeSolve):
-    for rows in range(9):
-        return
+    return changesCounter
 
 
 
 # kijkt of er nog 1 mogelijkheid over is op een plaats (moet na numberLogic)
 def mapFiller(sudokuMap, solveMap):
-    noChangesCounter = 81
+    changesCounter = 0
     for Y in range(9):
         for X in range(9):
             if sudokuMap[Y, X] != 0:
@@ -464,10 +450,10 @@ def mapFiller(sudokuMap, solveMap):
             possibleNumbers = np.nonzero(solveMap[Y, X])
             if len(possibleNumbers[0]) == 1:
                 sudokuMap[Y, X] = solveMap[Y, X, possibleNumbers[0][0]]
-                noChangesCounter += -1
+                changesCounter += 1
                 continue
 
-    return noChangesCounter
+    return changesCounter
 
 
 
@@ -521,22 +507,20 @@ def sudokuChecker2(sudokuMap, cubeMap):
 def sudokuSolver(sudokuMap, solveMap, options):
     cubeMap = cubeGen(sudokuMap)
     cubeSolve = cubeGen(solveMap)
-    # if len(duplicateForks) // 100 == len(duplicateForks) / 100:
-    #     print(len(duplicateForks))
     # removes double number on a line mistake after a wrong guess
     mapFiller(sudokuMap, solveMap)
     if not sudokuChecker2(sudokuMap, cubeMap):
         print("hoi")
         return
     while True:
-        noChangesCounter = 0
+        changesCounter = 0
         numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
-        noChangesCounter += mapFiller(sudokuMap, solveMap)
-        noChangesCounter += numberLogic2(sudokuMap, solveMap, cubeMap, cubeSolve)
-        numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve)
-        numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
+        changesCounter += mapFiller(sudokuMap, solveMap)
+        changesCounter += numberLogic2(sudokuMap, solveMap, cubeMap, cubeSolve)
+        changesCounter += numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve)
+        changesCounter += numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
         # sudokuPrint(sudokuMap)
-        # print(noChangesCounter)
+        print(changesCounter)
 
 
         if 0 not in sudokuMap:
@@ -556,7 +540,7 @@ def sudokuSolver(sudokuMap, solveMap, options):
             break
 
         #noChangeCounter aanpassen als je mapfiller weer gaat gebruiken naar 162
-        if noChangesCounter == 162:
+        if changesCounter == 0:
             # print("Map incomplete")
             if options == False:
                 print("Map incomplete")
@@ -650,14 +634,14 @@ def display():
 
 
 generatedMap = puzzleConvert(emptyMap)
-#
+
 emptyMap = puzzleConvert(emptyMap)
 
 # sudokuSolver(emptyMap, solveMap, "generate")
 
-# sudokuMap = puzzleConvert(testPuzzle1)
+sudokuMap = puzzleConvert(testPuzzle1)
 # sudokuMap = puzzleConvert(testPuzzleHard)
-sudokuMap = puzzleConvert(testPuzzleHardest)
+# sudokuMap = puzzleConvert(testPuzzleHardest)
 numberLogicInit(sudokuMap, solveMap)
 sudokuSolver(sudokuMap, solveMap, "menyTest")
 stop_time = time.monotonic()
@@ -710,7 +694,9 @@ print(stop_time)
 
 #nog een test numberlogic4
 # sudokuMap = puzzleConvert(testPuzzle10)
-# sudokuMap = puzzleConvert(testPuzzle16)
+# # sudokuMap = puzzleConvert(testPuzzle16)
+# #kijken of logica 3 nog nodig is
+# # sudokuMap = puzzleConvert(testPuzzle11)
 # cubeMap = cubeGen(sudokuMap)
 # cubeSolve = cubeGen(solveMap)
 # numberLogicInit(sudokuMap, solveMap)
