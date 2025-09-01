@@ -614,16 +614,17 @@ emptyMap = puzzleConvert(emptyMap)
 
 # sudokuSolver(emptyMap, solveMap, "generate")
 
-firstCompleted = []
-sudokuMap = puzzleConvert(testPuzzle1)
-# sudokuMap = puzzleConvert(testPuzzleHard)
-# sudokuMap = puzzleConvert(testPuzzleHardest)
-numberLogicInit(sudokuMap, solveMap)
-sudokuSolver(sudokuMap, solveMap, True)
-stop_time = time.monotonic()
-print(start_time)
-print(firstCompleted[0])
-print(stop_time)
+if __name__ == "__main__":
+    firstCompleted = []
+    sudokuMap = puzzleConvert(testPuzzle1)
+    # sudokuMap = puzzleConvert(testPuzzleHard)
+    # sudokuMap = puzzleConvert(testPuzzleHardest)
+    numberLogicInit(sudokuMap, solveMap)
+    sudokuSolver(sudokuMap, solveMap, True)
+    stop_time = time.monotonic()
+    print(start_time)
+    print(firstCompleted[0])
+    print(stop_time)
 
 # sudokuMap = puzzleConvert(testPuzzleHard)
 # # sudokuMap = puzzleConvert(testPuzzle16)
