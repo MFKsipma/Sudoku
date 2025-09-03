@@ -1,11 +1,11 @@
 from tkinter import *
 import tkinter
 from tkinter import ttk
-import numpy_test
+import NumpySudoku as sudo
 
 posHolder = [[0, 0]]
 
-display = numpy_test.display()
+display = sudo.display()
 
 def coords(position):
     posHolder[0] = position
