@@ -3,37 +3,7 @@ import random
 #import cProfile
 #import timeit
 
-
-
-
-emptyMap = [['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.'],
-              ['.', '.', '.', '.', '.', '.', '.', '.', '.']]
-
-
-
-
-
 duplicateForks = []
-completedSudokus = [0]
-
-
-def puzzleConvert(testPuzzle):
-    convertedMap = np.zeros((9, 9), "int8")
-    for Y in range(9):
-        for X in range(9):
-            if testPuzzle[Y][X] == ".":
-                continue
-            else:
-                convertedMap[Y, X] = int(testPuzzle[Y][X])
-    return convertedMap
-
 
 def sudokuPrint(sudokuMap):
     printMap = " _ _ _ _ _ _ _ _ _ _ _ _ _\n"
@@ -52,10 +22,6 @@ def sudokuPrint(sudokuMap):
             printMap += " | - - - + - - - + - - - |\n"
     printMap += " ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾ ‾"
     print(printMap)
-
-
-
-solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
 
 
 # dit moet buiten recursive
@@ -285,8 +251,6 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
 
 
         if 0 not in sudokuMap:
-            completedSudokus[0] += 1
-
             sudokuChecker(sudokuMap, cubeMap)
             if sudokuChecker(sudokuMap, cubeMap):
                 sudokuPrint(sudokuMap)
@@ -327,22 +291,29 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                                 return
                     forkLevel += 1
                 # ??????? VVV
-                break
+                # break
 
             elif options == "generate":
-                newNumberPlaced = False
-                while not newNumberPlaced:
-                    Y = random.randrange(9)
-                    X = random.randrange(9)
-                    if sudokuMap[Y, X] == 0:
-                        while not newNumberPlaced:
-                            newNumber = random.randrange(9)
-                            if solveMap[Y, X, newNumber] != 0:
-                                sudokuMap[Y, X] = solveMap[Y, X, newNumber]
-                                generatedMap[Y, X] = solveMap[Y, X, newNumber]
-                                testNumberLogic(solveMap, Y, X, newNumber)
-                                newNumberPlaced = True
-                            sudokuPrint(sudokuMap)
+                if (solveMap == 0).all():
+                    if 0 in sudokuMap:
+                        generatedMap = np.zeros((9, 9), "int8")
+                        emptyMap = np.zeros((9, 9), "int8")
+                        solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
+                        return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
+                else:
+                    newNumberPlaced = False
+                    while not newNumberPlaced:
+                        Y = random.randrange(9)
+                        X = random.randrange(9)
+                        if sudokuMap[Y, X] == 0:
+                            while not newNumberPlaced:
+                                newNumber = random.randrange(9)
+                                if solveMap[Y, X, newNumber] != 0:
+                                    sudokuMap[Y, X] = solveMap[Y, X, newNumber]
+                                    generatedMap[Y, X] = solveMap[Y, X, newNumber]
+                                    testNumberLogic(solveMap, Y, X, newNumber)
+                                    newNumberPlaced = True
+                                sudokuPrint(sudokuMap)
 
 
                 # newNumberPlaced = False
@@ -366,9 +337,12 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                 #             sudokuPrint(sudokuMap)
 
 
+solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
+
 def display():
     generatedMap = np.zeros((9, 9), "int8")
     emptyMap = np.zeros((9, 9), "int8")
-    return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
+    return sudokuSolver(emptyMap, solveMap, True, generatedMap)
 
 
+sudokuPrint(display())
