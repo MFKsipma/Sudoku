@@ -32,13 +32,6 @@ def numberLogicInit(sudokuMap, solveMap):
                 solveMap[Y, X] = 0
 
 
-# nodig voor logica, cube[nummer][y-as = 0, x-as = 1]
-cube = []
-for Y in range(3):
-    for X in range(3):
-        cube.append([Y * 3, X * 3])
-
-
 def cubeGen(sudokuMap):
     cubeMap = []
     for Y in range(3):
@@ -193,7 +186,7 @@ def mapFiller(sudokuMap, solveMap):
             possibleNumbers = np.nonzero(solveMap[Y, X])
             if len(possibleNumbers[0]) == 1:
                 sudokuMap[Y, X] = solveMap[Y, X, possibleNumbers[0][0]]
-                continue
+                testNumberLogic(solveMap, Y, X, solveMap[Y, X, possibleNumbers[0][0]])
 
 
 
@@ -290,8 +283,6 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                                     sudokuSolver(testSudokuMap, testSolveMap, True, generatedMap)
                                 return
                     forkLevel += 1
-                # ??????? VVV
-                # break
 
             elif options == "generate":
                 if (solveMap == 0).all():
@@ -339,10 +330,11 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
 
 solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
 
+
 def display():
     generatedMap = np.zeros((9, 9), "int8")
     emptyMap = np.zeros((9, 9), "int8")
-    return sudokuSolver(emptyMap, solveMap, True, generatedMap)
+    return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
 
 
-sudokuPrint(display())
+# sudokuPrint(display())
