@@ -221,7 +221,7 @@ testPuzzle16 = [['1', '4', '.', '.', '.', '.', '.', '.', '.'],
 
 # convert oude map naar nieuwe map
 # testPuzzle = testPuzzle00
-global QuitSolver
+
 QuitSolver = False
 
 emptyMap = testPuzzle1
@@ -435,30 +435,27 @@ def mapFiller(sudokuMap, solveMap):
             possibleNumbers = np.nonzero(solveMap[Y, X])
             if len(possibleNumbers[0]) == 1:
                 sudokuMap[Y, X] = solveMap[Y, X, possibleNumbers[0][0]]
-                # testNumberLogic(solveMap, Y, X, solveMap[Y, X, possibleNumbers[0][0]] - 1) <---- fix
-                # break <------------------------------------------------------------------------------
+                testNumberLogic(solveMap, Y, X, solveMap[Y, X, possibleNumbers[0][0]] - 1)
 
 
 
 
 def sudokuChecker(sudokuMap, cubeMap):
     # return True
+    global QuitSolver
     for rowOrColumnOrCube in range(9):
         if len(np.unique(sudokuMap[rowOrColumnOrCube])) != 9:
             print(f"invalid sudoku. row {rowOrColumnOrCube + 1}")
-            global QuitSolver
             QuitSolver = True
             sudokuPrint(sudokuMap)
             return False
         if len(np.unique(sudokuMap[:, rowOrColumnOrCube])) != 9:
             print(f"invalid sudoku. column {rowOrColumnOrCube + 1}")
-            global QuitSolver
             QuitSolver = True
             sudokuPrint(sudokuMap)
             return False
         if len(np.unique(cubeMap[rowOrColumnOrCube])) != 9:
             print(f"invalid sudoku. cube {rowOrColumnOrCube + 1}")
-            global QuitSolver
             QuitSolver = True
             sudokuPrint(sudokuMap)
             return False
@@ -469,22 +466,20 @@ def sudokuChecker(sudokuMap, cubeMap):
 
 def sudokuChecker2(sudokuMap, cubeMap):
     # return True
+    global QuitSolver
     for rowOrColumnOrCube in range(9):
         if np.count_nonzero(sudokuMap[rowOrColumnOrCube]) >= len(np.unique(sudokuMap[rowOrColumnOrCube])):
             if len(np.unique(sudokuMap[rowOrColumnOrCube])) != 9:
-                global QuitSolver
                 QuitSolver = True
                 sudokuPrint(sudokuMap)
                 return False
         if np.count_nonzero(sudokuMap[:, rowOrColumnOrCube]) >= len(np.unique(sudokuMap[:, rowOrColumnOrCube])):
             if len(np.unique(sudokuMap[:, rowOrColumnOrCube])) != 9:
-                global QuitSolver
                 QuitSolver = True
                 sudokuPrint(sudokuMap)
                 return False
         if np.count_nonzero(cubeMap[rowOrColumnOrCube]) >= len(np.unique(cubeMap[rowOrColumnOrCube])):
             if len(np.unique(cubeMap[rowOrColumnOrCube])) != 9:
-                global QuitSolver
                 QuitSolver = True
                 sudokuPrint(sudokuMap)
                 return False
@@ -601,31 +596,56 @@ def sudokuSolver(sudokuMap, solveMap, options):
                                 sudokuSolver(testSudokuMap, testSolveMap, "menyTest")
                             return
 
+            # elif options == "generate":
+            #     newNumberPlaced = False
+            #     while not newNumberPlaced:
+            #         Y = random.randrange(9)
+            #         X = random.randrange(9)
+            #         if sudokuMap[Y, X] == 0:
+            #             ohNoTheLoops = 0
+            #             while not newNumberPlaced:
+            #                 newNumber = random.randrange(9)
+            #                 if solveMap[Y, X, newNumber] != 0:
+            #                     sudokuMap[Y, X] = solveMap[Y, X, newNumber]
+            #                     generatedMap[Y, X] = solveMap[Y, X, newNumber]
+            #                     testNumberLogic(solveMap, Y, X, newNumber)
+            #                     numberLogic(sudokuMap, solveMap, cubeMap,cubeSolve)
+            #                     mapFiller(sudokuMap, solveMap)
+            #                     newNumberPlaced = True
+            #                 ohNoTheLoops += 1
+            #                 if ohNoTheLoops == 50:
+            #                     print("er gaat wat fout!")
+            #                     break
+            #                 # print("stuck in a loop")
+            #                 # print(solveMap)
+            #                 sudokuPrint(sudokuMap)
+            #                 print(Y)
+            #                 print(X)
+            #                 # print(cubeMap[0])
+
             elif options == "generate":
-                newNumberPlaced = False
-                while not newNumberPlaced:
-                    Y = random.randrange(9)
-                    X = random.randrange(9)
-                    if sudokuMap[Y, X] == 0:
-                        ohNoTheLoops = 0
-                        while not newNumberPlaced:
-                            newNumber = random.randrange(9)
-                            if solveMap[Y, X, newNumber] != 0:
-                                sudokuMap[Y, X] = solveMap[Y, X, newNumber]
-                                generatedMap[Y, X] = solveMap[Y, X, newNumber]
-                                testNumberLogic(solveMap, Y, X, newNumber)
-                                numberLogic(sudokuMap, solveMap, cubeMap,cubeSolve)
-                                mapFiller(sudokuMap, solveMap)
-                                newNumberPlaced = True
-                            ohNoTheLoops += 1
-                            if ohNoTheLoops == 50:
-                                break
-                            # print("stuck in a loop")
-                            # print(solveMap)
-                            sudokuPrint(sudokuMap)
-                            print(Y)
-                            print(X)
-                            # print(cubeMap[0])
+                if (solveMap == 0).all():
+                    if 0 in sudokuMap:
+                        generatedMap = np.zeros((9, 9), "int8")
+                        emptyMap = np.zeros((9, 9), "int8")
+                        solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
+                        return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
+                else:
+                    newNumberPlaced = False
+                    while not newNumberPlaced:
+                        Y = random.randrange(9)
+                        X = random.randrange(9)
+                        if sudokuMap[Y, X] == 0:
+                            while not newNumberPlaced:
+                                newNumber = random.randrange(9)
+                                if solveMap[Y, X, newNumber] != 0:
+                                    sudokuMap[Y, X] = solveMap[Y, X, newNumber]
+                                    generatedMap[Y, X] = solveMap[Y, X, newNumber]
+                                    testNumberLogic(solveMap, Y, X, newNumber)
+                                    newNumberPlaced = True
+                                sudokuPrint(sudokuMap)
+
+
 
 def display():
     return puzzleConvert(testPuzzle)
@@ -634,7 +654,7 @@ def display():
 
 
 
-generatedMap = puzzleConvert(emptyMap)
+# generatedMap = puzzleConvert(emptyMap)
 
 emptyMap = puzzleConvert(emptyMap)
 
@@ -645,11 +665,11 @@ emptyMap = puzzleConvert(emptyMap)
 
 if __name__ == "__main__":
     firstCompleted = []
-    # sudokuMap = puzzleConvert(testPuzzle1)
+    sudokuMap = puzzleConvert(testPuzzle1)
     # sudokuMap = puzzleConvert(testPuzzleHard)
-    sudokuMap = puzzleConvert(testPuzzleHardest)
+    # sudokuMap = puzzleConvert(testPuzzleHardest)
     numberLogicInit(sudokuMap, solveMap)
-    sudokuSolver(sudokuMap, solveMap, True)
+    sudokuSolver(sudokuMap, solveMap, "generate")
     stop_time = time.monotonic()
     print(start_time)
     # print(firstCompleted[0])
