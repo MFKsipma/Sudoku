@@ -186,7 +186,7 @@ def mapFiller(sudokuMap, solveMap):
             possibleNumbers = np.nonzero(solveMap[Y, X])
             if len(possibleNumbers[0]) == 1:
                 sudokuMap[Y, X] = solveMap[Y, X, possibleNumbers[0][0]]
-                testNumberLogic(solveMap, Y, X, solveMap[Y, X, possibleNumbers[0][0]])
+                testNumberLogic(solveMap, Y, X, solveMap[Y, X, possibleNumbers[0][0]] - 1)
 
 
 
@@ -194,13 +194,13 @@ def mapFiller(sudokuMap, solveMap):
 def sudokuChecker(sudokuMap, cubeMap):
     for rowOrColumnOrCube in range(9):
         if len(np.unique(sudokuMap[rowOrColumnOrCube])) != 9:
-            # print(f"invalid sudoku. row {rowOrColumnOrCube + 1}")
+            print(f"invalid sudoku. row {rowOrColumnOrCube + 1}")
             return False
         if len(np.unique(sudokuMap[:, rowOrColumnOrCube])) != 9:
-            # print(f"invalid sudoku. column {rowOrColumnOrCube + 1}")
+            print(f"invalid sudoku. column {rowOrColumnOrCube + 1}")
             return False
         if len(np.unique(cubeMap[rowOrColumnOrCube])) != 9:
-            # print(f"invalid sudoku. cube {rowOrColumnOrCube + 1}")
+            print(f"invalid sudoku. cube {rowOrColumnOrCube + 1}")
             return False
     # print("valid map")
     return True
@@ -222,10 +222,6 @@ def sudokuChecker2(sudokuMap, cubeMap):
 
 
 
-
-
-
-
 def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
     cubeMap = cubeGen(sudokuMap)
     cubeSolve = cubeGen(solveMap)
@@ -240,7 +236,6 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
         numberLogic2(sudokuMap, solveMap, cubeMap, cubeSolve)
         numberLogic3(sudokuMap, solveMap, cubeMap, cubeSolve)
         numberLogic4(sudokuMap, solveMap, cubeMap, cubeSolve)
-
 
 
         if 0 not in sudokuMap:
@@ -285,6 +280,7 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                     forkLevel += 1
 
             elif options == "generate":
+                # if stuck
                 if (solveMap == 0).all():
                     if 0 in sudokuMap:
                         generatedMap = np.zeros((9, 9), "int8")
@@ -305,27 +301,6 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                                     testNumberLogic(solveMap, Y, X, newNumber)
                                     newNumberPlaced = True
                                 sudokuPrint(sudokuMap)
-
-
-                # newNumberPlaced = False
-                # while not newNumberPlaced:
-                #     Y = random.randrange(9)
-                #     X = random.randrange(9)
-                #     if sudokuMap[Y, X] == 0:
-                #         ohNoTheLoops = 0
-                #         while not newNumberPlaced:
-                #             newNumber = random.randrange(9)
-                #             if solveMap[Y, X, newNumber] != 0:
-                #                 sudokuMap[Y, X] = solveMap[Y, X, newNumber]
-                #                 generatedMap[Y, X] = solveMap[Y, X, newNumber]
-                #                 testNumberLogic(solveMap, Y, X, newNumber)
-                #                 numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
-                #                 mapFiller(sudokuMap, solveMap)
-                #                 newNumberPlaced = True
-                #             ohNoTheLoops += 1
-                #             if ohNoTheLoops == 50:
-                #                 break
-                #             sudokuPrint(sudokuMap)
 
 
 solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")

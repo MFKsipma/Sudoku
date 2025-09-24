@@ -441,7 +441,7 @@ def mapFiller(sudokuMap, solveMap):
 
 
 def sudokuChecker(sudokuMap, cubeMap):
-    # return True
+    return True
     global QuitSolver
     for rowOrColumnOrCube in range(9):
         if len(np.unique(sudokuMap[rowOrColumnOrCube])) != 9:
@@ -459,13 +459,13 @@ def sudokuChecker(sudokuMap, cubeMap):
             QuitSolver = True
             sudokuPrint(sudokuMap)
             return False
-    print("valid map")
+    # print("valid map")
     return True
 
 
 
 def sudokuChecker2(sudokuMap, cubeMap):
-    # return True
+    return True
     global QuitSolver
     for rowOrColumnOrCube in range(9):
         if np.count_nonzero(sudokuMap[rowOrColumnOrCube]) >= len(np.unique(sudokuMap[rowOrColumnOrCube])):
@@ -488,20 +488,17 @@ def sudokuChecker2(sudokuMap, cubeMap):
 
 
 
-
-
-
-def sudokuSolver(sudokuMap, solveMap, options):
+def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
     cubeMap = cubeGen(sudokuMap)
     cubeSolve = cubeGen(solveMap)
     # removes double number on a line mistake after a wrong guess
-    mapFiller(sudokuMap, solveMap)
+    # mapFiller(sudokuMap, solveMap) <----------------------
     if not sudokuChecker2(sudokuMap, cubeMap):
-        # print("hoi")
+        print("hoi")
         return
     while True:
-        print(QuitSolver)
         if QuitSolver == True:
+            print(QuitSolver)
             return
         changesMap = np.copy(solveMap)
         numberLogic(sudokuMap, solveMap, cubeMap, cubeSolve)
@@ -527,8 +524,8 @@ def sudokuSolver(sudokuMap, solveMap, options):
             # print("Map completed")
             # sudokuPrint(sudokuMap)
             # sudokuChecker(sudokuMap, cubeMap)
-            if sudokuChecker(sudokuMap, cubeMap):
-                firstCompleted.append(time.monotonic())
+            # if sudokuChecker(sudokuMap, cubeMap):
+            #     firstCompleted.append(time.monotonic())
                 # sudokuPrint(sudokuMap)
             if options == "generate":
                 return sudokuPrint(generatedMap)
@@ -543,8 +540,8 @@ def sudokuSolver(sudokuMap, solveMap, options):
                 print(solveMap)
                 break
             elif options == True:
-                if not sudokuChecker2(sudokuMap, cubeMap):
-                    return
+                # if not sudokuChecker2(sudokuMap, cubeMap):
+                #     return
                 #tests if there are still solutions left or that the program is stuck
                 if (solveMap == 0).all():
                     if 0 in sudokuMap:
@@ -563,14 +560,14 @@ def sudokuSolver(sudokuMap, solveMap, options):
                                     testSolveMap = np.copy(solveMap)
                                     testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
 
-                                    sudokuSolver(testSudokuMap, testSolveMap, True)
+                                    sudokuSolver(testSudokuMap, testSolveMap, True, generatedMap)
                                 return
                     forkLevel += 1
                 break
             # logica 3 nodig
             elif options == "menyTest":
-                if not sudokuChecker2(sudokuMap, cubeMap):
-                    return
+                # if not sudokuChecker2(sudokuMap, cubeMap):
+                #     return
                 #tests if there are still solutions left or that the program is stuck
                 if (solveMap == 0).all():
                     if 0 in sudokuMap:
@@ -593,7 +590,7 @@ def sudokuSolver(sudokuMap, solveMap, options):
                                 # print((testSolveMap))
                                 # sudokuPrint(sudokuMap)
                                 #sudokuChecker2(sudokuMap, cubeMap)
-                                sudokuSolver(testSudokuMap, testSolveMap, "menyTest")
+                                sudokuSolver(testSudokuMap, testSolveMap, "menyTest", generatedMap)
                             return
 
             # elif options == "generate":
@@ -624,6 +621,7 @@ def sudokuSolver(sudokuMap, solveMap, options):
             #                 # print(cubeMap[0])
 
             elif options == "generate":
+                # if stuck
                 if (solveMap == 0).all():
                     if 0 in sudokuMap:
                         generatedMap = np.zeros((9, 9), "int8")
@@ -654,7 +652,7 @@ def display():
 
 
 
-# generatedMap = puzzleConvert(emptyMap)
+generatedMap = puzzleConvert(emptyMap)
 
 emptyMap = puzzleConvert(emptyMap)
 
@@ -669,7 +667,7 @@ if __name__ == "__main__":
     # sudokuMap = puzzleConvert(testPuzzleHard)
     # sudokuMap = puzzleConvert(testPuzzleHardest)
     numberLogicInit(sudokuMap, solveMap)
-    sudokuSolver(sudokuMap, solveMap, "generate")
+    sudokuSolver(sudokuMap, solveMap, True, generatedMap)
     stop_time = time.monotonic()
     print(start_time)
     # print(firstCompleted[0])
