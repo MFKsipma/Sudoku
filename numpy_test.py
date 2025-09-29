@@ -489,13 +489,15 @@ def sudokuChecker2(sudokuMap, cubeMap):
 
 
 def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
+    global QuitSolver
     cubeMap = cubeGen(sudokuMap)
     cubeSolve = cubeGen(solveMap)
     # removes double number on a line mistake after a wrong guess
-    # mapFiller(sudokuMap, solveMap) <----------------------
-    if not sudokuChecker2(sudokuMap, cubeMap):
-        print("hoi")
-        return
+    mapFiller(sudokuMap, solveMap)
+    if options == "generate":
+        if not sudokuChecker2(sudokuMap, cubeMap):
+            print("hoi")
+            return
     while True:
         if QuitSolver == True:
             print(QuitSolver)
@@ -634,6 +636,11 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                         Y = random.randrange(9)
                         X = random.randrange(9)
                         if sudokuMap[Y, X] == 0:
+                            if (solveMap[Y, X] == 0).all():
+                                QuitSolver = True
+                                sudokuPrint(sudokuMap)
+                                print(solveMap)
+                                break
                             while not newNumberPlaced:
                                 newNumber = random.randrange(9)
                                 if solveMap[Y, X, newNumber] != 0:
@@ -661,17 +668,20 @@ emptyMap = puzzleConvert(emptyMap)
 
 # sudokuSolver(emptyMap, solveMap, "generate")
 
-if __name__ == "__main__":
-    firstCompleted = []
-    sudokuMap = puzzleConvert(testPuzzle1)
-    # sudokuMap = puzzleConvert(testPuzzleHard)
-    # sudokuMap = puzzleConvert(testPuzzleHardest)
-    numberLogicInit(sudokuMap, solveMap)
-    sudokuSolver(sudokuMap, solveMap, True, generatedMap)
-    stop_time = time.monotonic()
-    print(start_time)
-    # print(firstCompleted[0])
-    print(stop_time)
+for i in range(100):
+    if __name__ == "__main__":
+        firstCompleted = []
+        sudokuMap = puzzleConvert(testPuzzle1)
+        # sudokuMap = puzzleConvert(testPuzzleHard)
+        # sudokuMap = puzzleConvert(testPuzzleHardest)
+        numberLogicInit(sudokuMap, solveMap)
+        sudokuSolver(sudokuMap, solveMap, "generate", generatedMap)
+        stop_time = time.monotonic()
+        print(start_time)
+        # print(firstCompleted[0])
+        print(stop_time)
+        if QuitSolver == True:
+            break
 
 # sudokuMap = puzzleConvert(testPuzzleHard)
 # # sudokuMap = puzzleConvert(testPuzzle16)

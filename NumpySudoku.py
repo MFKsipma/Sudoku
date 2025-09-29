@@ -227,6 +227,7 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
     cubeSolve = cubeGen(solveMap)
     # removes double number on a line mistake after a wrong guess
     mapFiller(sudokuMap, solveMap)
+    # for checking bugs
     if not sudokuChecker2(sudokuMap, cubeMap):
         return
     while True:
@@ -311,5 +312,6 @@ def display():
     emptyMap = np.zeros((9, 9), "int8")
     return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
 
-
-# sudokuPrint(display())
+for i in range(100):
+    sudokuPrint(display())
+    print(str(i) + "---------------------------------------------------------------")
