@@ -526,6 +526,7 @@ def generate():
 
 def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
     print("wtf gebeurt er")
+    print(completedSudokus[0])
     # print(solveMap)
     global QuitSolver
     cubeMap = cubeGen(sudokuMap)
@@ -608,6 +609,8 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                                     testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
 
                                     sudokuSolver(testSudokuMap, testSolveMap, options, generatedMap)
+                                    if QuitSolver == True: # <--------------------------------------------------------------------- maakt het voor nu sneller, maar is dit wel handig ?
+                                        return
                                 return
                     forkLevel += 1
                 break
