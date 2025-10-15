@@ -488,6 +488,7 @@ def sudokuChecker2(sudokuMap, cubeMap):
 
 
 def generate():
+    global QuitSolver
     testGeneratedMap = np.zeros((9, 9), "int8")
     generatedMap = np.zeros((9, 9), "int8")
     solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
@@ -512,6 +513,7 @@ def generate():
                         completedSudokus[0] = 0
                         # print(testSolveMap)
                         sudokuSolver(testSudokuMap, testSolveMap, "testOptions", generatedMap)
+                        QuitSolver = False
                         print(completedSudokus[0])
                         if completedSudokus[0] > 0:
                             testGeneratedMap[Y, X] = testNumber + 1
@@ -525,8 +527,8 @@ def generate():
 
 
 def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
-    print("wtf gebeurt er")
-    print(completedSudokus[0])
+    # print("wtf gebeurt er")
+    # print(completedSudokus[0])
     # print(solveMap)
     global QuitSolver
     cubeMap = cubeGen(sudokuMap)
@@ -552,7 +554,7 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
 
 
         if 0 not in sudokuMap:
-            print("hij komt hier wel langs")
+            # print("hij komt hier wel langs")
             completedSudokus[0] += 1
             sudokuPrint(sudokuMap)
             if options == "testOptions":
@@ -737,14 +739,14 @@ emptyMap = puzzleConvert(emptyMap)
 
 # sudokuSolver(emptyMap, solveMap, "generate")
 
-# for i in range(100):
-#     if __name__ == "__main__":
+# if __name__ == "__main__":
+#     for i in range(100):
 #         firstCompleted = []
 #         sudokuMap = puzzleConvert(testPuzzle1)
 #         # sudokuMap = puzzleConvert(testPuzzleHard)
 #         # sudokuMap = puzzleConvert(testPuzzleHardest)
 #         numberLogicInit(sudokuMap, solveMap)
-#         sudokuSolver(sudokuMap, solveMap, "generate", generatedMap)
+#         sudokuSolver(sudokuMap, solveMap, True, generatedMap)
 #         stop_time = time.monotonic()
 #         print(start_time)
 #         # print(firstCompleted[0])
