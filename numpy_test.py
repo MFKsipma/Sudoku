@@ -495,16 +495,12 @@ def generate():
     while completedSudokus[0] != 1:
         newNumberPlaced = False
         while not newNumberPlaced:
-            print("henk")
             Y = random.randrange(9)
             X = random.randrange(9)
             if testGeneratedMap[Y, X] == 0:
                 while not newNumberPlaced:
-                    print("melk")
-                    print(solveMap[Y, X])
-                    print(Y)
-                    print(X)
                     testNumber = random.randrange(9)
+                    print(testNumber)
                     if solveMap[Y, X, testNumber] != 0:
                         testSudokuMap = np.copy(testGeneratedMap)
                         testSudokuMap[Y, X] = testNumber + 1
@@ -514,20 +510,18 @@ def generate():
                         # print(testSolveMap)
                         sudokuSolver(testSudokuMap, testSolveMap, "testOptions", generatedMap)
                         QuitSolver = False
-                        print(completedSudokus[0])
                         if completedSudokus[0] > 0:
                             testGeneratedMap[Y, X] = testNumber + 1
                             solveMap = testNumberLogic(solveMap, Y, X, testNumber)
                             sudokuPrint(testGeneratedMap)
                             newNumberPlaced = True
-                            print("kaas")
     sudokuPrint(testGeneratedMap)
 
 
 
 
 def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
-    # print("wtf gebeurt er")
+    print("wtf gebeurt er")
     # print(completedSudokus[0])
     # print(solveMap)
     global QuitSolver
@@ -556,11 +550,10 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
         if 0 not in sudokuMap:
             # print("hij komt hier wel langs")
             completedSudokus[0] += 1
-            sudokuPrint(sudokuMap)
+            # sudokuPrint(sudokuMap)
             if options == "testOptions":
                 if completedSudokus[0] == 2:
                     QuitSolver = True
-                    print(completedSudokus[0])
                     return
             if completedSudokus[0] // 1000 == completedSudokus[0] / 1000:
                 print(completedSudokus[0])
@@ -730,9 +723,9 @@ def display():
 
 
 
-generatedMap = puzzleConvert(emptyMap)
+# generatedMap = puzzleConvert(emptyMap)
 
-emptyMap = puzzleConvert(emptyMap)
+# emptyMap = puzzleConvert(emptyMap)
 
 # global QuitSolver
 # QuitSolver = False
