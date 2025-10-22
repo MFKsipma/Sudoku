@@ -1,7 +1,8 @@
 from tkinter import *
 import tkinter
 from tkinter import ttk
-import NumpySudoku as sudo
+# import NumpySudoku as sudo
+import numpy_test as sudo
 
 posHolder = [[0, 0]]
 

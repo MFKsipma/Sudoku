@@ -513,15 +513,16 @@ def generate():
                         if completedSudokus[0] > 0:
                             testGeneratedMap[Y, X] = testNumber + 1
                             solveMap = testNumberLogic(solveMap, Y, X, testNumber)
-                            sudokuPrint(testGeneratedMap)
+                            # sudokuPrint(testGeneratedMap)
                             newNumberPlaced = True
     sudokuPrint(testGeneratedMap)
+    return testGeneratedMap
 
 
 
 
 def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
-    print("wtf gebeurt er")
+    # print("wtf gebeurt er")
     # print(completedSudokus[0])
     # print(solveMap)
     global QuitSolver
@@ -746,9 +747,11 @@ def display():
 #         print(stop_time)
 #         if QuitSolver == True:
 #             break
+if __name__ == "__main__":
+    generate()
 
-generate()
-
+def display():
+    return generate()
 # sudokuMap = puzzleConvert(testPuzzleHard)
 # # sudokuMap = puzzleConvert(testPuzzle16)
 # numberLogicInit(sudokuMap, solveMap)
