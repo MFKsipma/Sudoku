@@ -222,6 +222,15 @@ def sudokuChecker2(sudokuMap, cubeMap):
 
 
 
+def restart():
+    generatedMap = np.zeros((9, 9), "int8")
+    emptyMap = np.zeros((9, 9), "int8")
+    solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
+    return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
+
+
+
+
 def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
     cubeMap = cubeGen(sudokuMap)
     cubeSolve = cubeGen(solveMap)
@@ -276,7 +285,7 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                                     testSolveMap = np.copy(solveMap)
                                     testNumberLogic(testSolveMap, Y, X, testNumbers - 1)
 
-                                    sudokuSolver(testSudokuMap, testSolveMap, True, generatedMap)
+                                    # sudokuSolver(testSudokuMap, testSolveMap, True, generatedMap)
                                 return
                     forkLevel += 1
 
@@ -284,16 +293,23 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                 # if stuck
                 if (solveMap == 0).all():
                     if 0 in sudokuMap:
-                        generatedMap = np.zeros((9, 9), "int8")
-                        emptyMap = np.zeros((9, 9), "int8")
-                        solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
-                        return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
+                        faildeCode[0] += 1
+                        print("flap")
+                        # generatedMap = np.zeros((9, 9), "int8")
+                        # emptyMap = np.zeros((9, 9), "int8")
+                        # solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
+                        # return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
+                        return restart()
                 else:
                     newNumberPlaced = False
                     while not newNumberPlaced:
                         Y = random.randrange(9)
                         X = random.randrange(9)
                         if sudokuMap[Y, X] == 0:
+                            if np.count_nonzero(solveMap[Y, X]) == 0:
+                                faildeCode[0] += 1
+                                print("flip")
+                                return restart()
                             while not newNumberPlaced:
                                 newNumber = random.randrange(9)
                                 if solveMap[Y, X, newNumber] != 0:
@@ -301,7 +317,7 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                                     generatedMap[Y, X] = solveMap[Y, X, newNumber]
                                     testNumberLogic(solveMap, Y, X, newNumber)
                                     newNumberPlaced = True
-                                sudokuPrint(sudokuMap)
+                                # sudokuPrint(sudokuMap)
 
 
 solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
@@ -312,6 +328,10 @@ def display():
     emptyMap = np.zeros((9, 9), "int8")
     return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
 
+faildeCode = [0]
+#
 # for i in range(100):
 #     sudokuPrint(display())
 #     print(str(i) + "---------------------------------------------------------------")
+
+print(faildeCode[0])

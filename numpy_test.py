@@ -487,6 +487,17 @@ def sudokuChecker2(sudokuMap, cubeMap):
     return True
 
 
+
+
+def restart():
+    generatedMap = np.zeros((9, 9), "int8")
+    emptyMap = np.zeros((9, 9), "int8")
+    solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
+    return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
+
+
+
+
 def generate():
     global QuitSolver
     testGeneratedMap = np.zeros((9, 9), "int8")
@@ -691,10 +702,11 @@ def sudokuSolver(sudokuMap, solveMap, options, generatedMap):
                 # if stuck
                 if (solveMap == 0).all():
                     if 0 in sudokuMap:
-                        generatedMap = np.zeros((9, 9), "int8")
-                        emptyMap = np.zeros((9, 9), "int8")
-                        solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
-                        return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
+                        # generatedMap = np.zeros((9, 9), "int8")
+                        # emptyMap = np.zeros((9, 9), "int8")
+                        # solveMap = np.array([[[1, 2, 3, 4, 5, 6, 7, 8, 9]] * 9] * 9, dtype="int8")
+                        # return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
+                        return restart() # @@@@@@@@@@@@@@@@@@@@@@@@@@@@ dit kan ook nog verder naar onder
                 else:
                     newNumberPlaced = False
                     while not newNumberPlaced:
