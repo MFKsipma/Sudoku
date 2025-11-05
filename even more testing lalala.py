@@ -29,9 +29,22 @@ kaas[2, 3, 1] = 2
 # print((cubeNumber // 3) * 3 + ((cubeNumber + 1) % 3))
 # print((cubeNumber // 3) * 3 + ((cubeNumber + 2) % 3))
 
-print(np.count_nonzero(kaas))
+# print(np.count_nonzero(kaas))
 
-print(len(np.unique(kaas)))
+# print(len(np.unique(kaas)))
 
-print(np.count_nonzero(kaas))
-print(np.unique(kaas))
+# print(np.count_nonzero(kaas))
+# print(np.unique(kaas))
+
+blabla = np.ones((4,4), "int8")
+# print(blabla)
+
+blabla[2] = 0
+
+print(blabla[2:])
+print("hoi")
+print(blabla[2:][blabla[2:] != 0])
+
+# print(blabla)
+for i in range(20):
+    print(random.randrange(9))

@@ -329,9 +329,9 @@ def display():
     return sudokuSolver(emptyMap, solveMap, "generate", generatedMap)
 
 faildeCode = [0]
-#
-# for i in range(100):
-#     sudokuPrint(display())
-#     print(str(i) + "---------------------------------------------------------------")
+
+for i in range(100):
+    sudokuPrint(display())
+    print(str(i) + "---------------------------------------------------------------")
 
 print(faildeCode[0])

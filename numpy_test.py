@@ -509,8 +509,11 @@ def generate():
             Y = random.randrange(9)
             X = random.randrange(9)
             if testGeneratedMap[Y, X] == 0:
+                print(f"{Y}, {X}")
+                availebleNumbers = solveMap[Y, X][solveMap[Y, X] !=0]
                 while not newNumberPlaced:
-                    testNumber = random.randrange(9)
+                    # testNumber = random.randrange(9)
+                    testNumber = availebleNumbers[random.randrange(len(availebleNumbers))] - 1
                     print(testNumber)
                     if solveMap[Y, X, testNumber] != 0:
                         testSudokuMap = np.copy(testGeneratedMap)
@@ -519,6 +522,7 @@ def generate():
                         testSolveMap = testNumberLogic(testSolveMap, Y, X, testNumber)
                         completedSudokus[0] = 0
                         # print(testSolveMap)
+                        sudokuPrint(testSudokuMap)
                         sudokuSolver(testSudokuMap, testSolveMap, "testOptions", generatedMap)
                         QuitSolver = False
                         if completedSudokus[0] > 0:
@@ -526,6 +530,11 @@ def generate():
                             solveMap = testNumberLogic(solveMap, Y, X, testNumber)
                             # sudokuPrint(testGeneratedMap)
                             newNumberPlaced = True
+                        # NIEUW dit moet je testen
+                        else:
+                            print(f"oud {availebleNumbers} test nummer {testNumber + 1} nieuwe lijst:")
+                            availebleNumbers = availebleNumbers[availebleNumbers != testNumber + 1]
+                            print(availebleNumbers)
     sudokuPrint(testGeneratedMap)
     return testGeneratedMap
 
